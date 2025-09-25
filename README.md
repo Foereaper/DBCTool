@@ -28,7 +28,7 @@ Clone the repository and build with Go:
 ``` bash
 git clone https://github.com/foereaper/dbctool.git
 cd dbctool
-go build -o dbctool
+go build -C src -o dbctool
 ```
 
 You need **Go 1.20+** and access to a **MySQL server**.
