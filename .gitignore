@@ -4,3 +4,5 @@
 
 *.config
 *.exe
+*.dbc
+config.json

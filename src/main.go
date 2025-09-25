@@ -72,7 +72,7 @@ func main() {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 	if created {
-		fmt.Printf("Config template created at %s. Please edit it and re-run.\n", &globalConfigPath)
+		fmt.Printf("Config template created at %s. Please edit it and re-run.\n", globalConfigPath)
 		return
 	}
 
@@ -153,6 +153,8 @@ func handleHeader(cfg *Config, args []string) {
 
 func handleImport(cfg *Config, args []string) {
 	importCmd := flag.NewFlagSet("import", flag.ExitOnError)
+    dbcName := importCmd.String("name", "", "DBC file name")
+	importCmd.StringVar(dbcName, "H", "", "DBC file name (shorthand)")
 	importCmd.Parse(args)
 
 	dbcDB, err := openDB(cfg.DBC)
@@ -161,15 +163,24 @@ func handleImport(cfg *Config, args []string) {
 	}
 	defer dbcDB.Close()
 
-	if err := ImportDBCs(dbcDB, cfg); err != nil {
-		log.Fatalf("Import failed: %v", err)
-	}
+    if *dbcName == "" {
+        if err := ImportDBCs(dbcDB, cfg); err != nil {
+            log.Fatalf("Export failed: %v", err)
+        }
+    } else {
+        metaPath := filepath.Join(cfg.Paths.Meta, *dbcName+".meta.json")
+        if err := ImportDBC(dbcDB, cfg, metaPath); err != nil {
+            log.Fatalf("Export failed for %s: %v", *dbcName, err)
+        }
+    }
 
 	fmt.Println("Import completed successfully!")
 }
 
 func handleExport(cfg *Config, args []string) {
 	exportCmd := flag.NewFlagSet("export", flag.ExitOnError)
+    dbcName := exportCmd.String("name", "", "DBC file name")
+	exportCmd.StringVar(dbcName, "H", "", "DBC file name (shorthand)")
 	exportCmd.Parse(args)
 
 	dbcDB, err := openDB(cfg.DBC)
@@ -178,9 +189,16 @@ func handleExport(cfg *Config, args []string) {
 	}
 	defer dbcDB.Close()
 
-	if err := ExportDBCs(dbcDB, cfg); err != nil {
-		log.Fatalf("Export failed: %v", err)
-	}
+    if *dbcName == "" {
+        if err := ExportDBCs(dbcDB, cfg); err != nil {
+            log.Fatalf("Export failed: %v", err)
+        }
+    } else {
+        metaPath := filepath.Join(cfg.Paths.Meta, *dbcName+".meta.json")
+        if err := ExportDBC(dbcDB, cfg, metaPath); err != nil {
+            log.Fatalf("Export failed for %s: %v", *dbcName, err)
+        }
+    }
 
 	fmt.Println("Export completed successfully!")
 }

@@ -21,7 +21,7 @@ var locLangs = []string{
 	"unused1", "unused2", "unused3", "unused4", "flags",
 }
 
-// ImportDBCs scans the meta directory and imports DBCs into SQL, with duplicate check
+// ImportDBCs scans the meta directory and imports all DBCs
 func ImportDBCs(db *sql.DB, cfg *Config) error {
 	metas, err := filepath.Glob(filepath.Join(cfg.Paths.Meta, "*.meta.json"))
 	if err != nil {
@@ -29,49 +29,52 @@ func ImportDBCs(db *sql.DB, cfg *Config) error {
 	}
 
 	for _, metaPath := range metas {
-		meta, err := LoadMeta(metaPath)
-        if err != nil {
-            return fmt.Errorf("failed to load meta: %w", err)
-        }
-        
-		tableName := strings.TrimSuffix(filepath.Base(meta.File), ".dbc")
-
-		dbcPath := filepath.Join(cfg.Paths.Base, meta.File)
-		if _, err := os.Stat(dbcPath); os.IsNotExist(err) {
-			log.Printf("Skipping %s: DBC file does not exist", tableName)
-			continue
+		if err := ImportDBC(db, cfg, metaPath); err != nil {
+			return err
 		}
-
-		// Check if table exists
-		if tableExists(db, tableName) {
-			log.Printf("Skipping %s: table already exists", tableName)
-			continue
-		}
-
-		log.Printf("Importing %s into table %s...", dbcPath, tableName)
-
-		// Load DBC
-		dbc, err := LoadDBC(dbcPath, meta)
-        if err != nil {
-            return fmt.Errorf("failed to load dbc: %w", err)
-        }
-
-		// --- NEW: Check duplicates based on uniqueKeys ---
-		checkUniqueKeys(dbc.Records, &meta, tableName)
-
-		// Create table
-		if err := createTable(db, tableName, &meta); err != nil {
-			return fmt.Errorf("failed to create table %s: %w", tableName, err)
-		}
-
-		// Insert records
-		if err := insertRecords(db, tableName, &dbc, &meta); err != nil {
-			return fmt.Errorf("failed to insert records for %s: %w", tableName, err)
-		}
-
-		log.Printf("Imported %s into table %s", dbcPath, tableName)
 	}
 
+	return nil
+}
+
+// ImportDBC imports a single DBC into SQL based on its meta
+func ImportDBC(db *sql.DB, cfg *Config, metaPath string) error {
+	meta, err := LoadMeta(metaPath)
+	if err != nil {
+		return fmt.Errorf("failed to load meta %s: %w", metaPath, err)
+	}
+
+	tableName := strings.TrimSuffix(filepath.Base(meta.File), ".dbc")
+	dbcPath := filepath.Join(cfg.Paths.Base, meta.File)
+
+	if _, err := os.Stat(dbcPath); os.IsNotExist(err) {
+		log.Printf("Skipping %s: DBC file does not exist", tableName)
+		return nil
+	}
+
+	if tableExists(db, tableName) {
+		log.Printf("Skipping %s: table already exists", tableName)
+		return nil
+	}
+
+	log.Printf("Importing %s into table %s...", dbcPath, tableName)
+
+	dbc, err := LoadDBC(dbcPath, meta)
+	if err != nil {
+		return fmt.Errorf("failed to load DBC %s: %w", dbcPath, err)
+	}
+
+	checkUniqueKeys(dbc.Records, &meta, tableName)
+
+	if err := createTable(db, tableName, &meta); err != nil {
+		return fmt.Errorf("failed to create table %s: %w", tableName, err)
+	}
+
+	if err := insertRecords(db, tableName, &dbc, &meta); err != nil {
+		return fmt.Errorf("failed to insert records for %s: %w", tableName, err)
+	}
+
+	log.Printf("Imported %s into table %s", dbcPath, tableName)
 	return nil
 }
 

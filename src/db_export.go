@@ -13,109 +13,105 @@ import (
 	"strings"
 )
 
-// ExportDBCs queries SQL tables and rebuilds DBC files using DBCFile + MetaFile
+// ExportDBCs iterates over all meta files and exports each table
 func ExportDBCs(db *sql.DB, cfg *Config) error {
-	metas, err := filepath.Glob(filepath.Join(cfg.Paths.Meta, "*.meta.json"))
+    metas, err := filepath.Glob(filepath.Join(cfg.Paths.Meta, "*.meta.json"))
+    if err != nil {
+        return fmt.Errorf("failed to scan meta directory: %w", err)
+    }
+
+    for _, metaPath := range metas {
+        if err := ExportDBC(db, cfg, metaPath); err != nil {
+            return fmt.Errorf("failed to export %s: %w", metaPath, err)
+        }
+    }
+
+    return nil
+}
+
+// ExportDBC handles exporting a single table/meta to a DBC file
+func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
+    meta, err := LoadMeta(metaPath)
 	if err != nil {
-		return fmt.Errorf("failed to scan meta directory: %w", err)
+		return fmt.Errorf("failed to load meta %s: %w", metaPath, err)
 	}
+    
+    tableName := strings.TrimSuffix(meta.File, ".dbc")
+    
+    fmt.Printf("Exporting table %s to DBC...\n", tableName)
+    
+    orderClause := buildOrderBy(meta.SortOrder)
+    
+    rows, err := db.Query(fmt.Sprintf("SELECT * FROM `%s`%s", tableName, orderClause))
+    if err != nil {
+        return fmt.Errorf("failed to query table %s: %w", tableName, err)
+    }
+    defer rows.Close()
 
-	for _, metaPath := range metas {
-		meta, err := LoadMeta(metaPath)
-        if err != nil {
-            return fmt.Errorf("failed to load meta: %w", err)
+    cols, err := rows.Columns()
+    if err != nil {
+        return fmt.Errorf("failed to get columns for table %s: %w", tableName, err)
+    }
+
+    dbc := DBCFile{
+        Header:      DBCHeader{Magic: [4]byte{'W', 'D', 'B', 'C'}},
+        Records:     []Record{},
+        StringBlock: []byte{0}, // first byte must be null
+    }
+    stringOffsets := map[string]uint32{"": 0}
+
+    for rows.Next() {
+        raw := make([]interface{}, len(cols))
+        ptrs := make([]interface{}, len(cols))
+        for i := range raw {
+            ptrs[i] = &raw[i]
         }
-		tableName := strings.TrimSuffix(filepath.Base(meta.File), ".dbc")
-
-		// Skip missing tables
-		if !tableExists(db, tableName) {
-			fmt.Printf("Skipping %s: table does not exist\n", tableName)
-			continue
-		}
-
-		fmt.Printf("Exporting table %s to DBC...\n", tableName)
-
-		orderClause := buildOrderBy(meta.SortOrder)
-        rows, err := db.Query(fmt.Sprintf("SELECT * FROM `%s`%s", tableName, orderClause))
-        if err != nil {
-            return fmt.Errorf("failed to query table %s: %w", tableName, err)
+        if err := rows.Scan(ptrs...); err != nil {
+            return fmt.Errorf("failed to scan row for table %s: %w", tableName, err)
         }
-        
-		cols, err := rows.Columns()
-		if err != nil {
-			return fmt.Errorf("failed to get columns: %w", err)
-		}
 
-		// Initialize DBCFile
-		dbc := DBCFile{
-			Header:      DBCHeader{Magic: [4]byte{'W', 'D', 'B', 'C'}},
-			Records:     make([]Record, 0),
-			StringBlock: []byte{0}, // first byte must be null
-		}
-		stringOffsets := map[string]uint32{"": 0}
+        rec := make(Record)
+        for _, field := range meta.Fields {
+            switch field.Type {
+            case "int32":
+                rec[field.Name] = toInt32(raw, cols, field.Name)
+            case "uint32":
+                rec[field.Name] = toUint32(raw, cols, field.Name)
+            case "float":
+                rec[field.Name] = toFloat32(raw, cols, field.Name)
+            case "string":
+                str := toString(raw, cols, field.Name)
+                rec[field.Name] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
+            case "Loc":
+                loc := make([]uint32, 17)
+                for i := 0; i < 16; i++ {
+                    colName := fmt.Sprintf("%s_%s", field.Name, locLangs[i])
+                    str := toString(raw, cols, colName)
+                    loc[i] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
+                }
+                loc[16] = toUint32(raw, cols, fmt.Sprintf("%s_flags", field.Name))
+                rec[field.Name] = loc
+            }
+        }
+        dbc.Records = append(dbc.Records, rec)
+    }
 
-		for rows.Next() {
-			raw := make([]interface{}, len(cols))
-			ptrs := make([]interface{}, len(cols))
-			for i := range raw {
-				ptrs[i] = &raw[i]
-			}
-			if err := rows.Scan(ptrs...); err != nil {
-				return fmt.Errorf("row scan failed: %w", err)
-			}
+    dbc.Header.RecordCount = uint32(len(dbc.Records))
+    dbc.Header.FieldCount = calculateFieldCount(meta)
+    dbc.Header.RecordSize = calculateRecordSize(meta)
+    dbc.Header.StringBlockSize = uint32(len(dbc.StringBlock))
 
-			rec := make(Record)
-			// build strictly in meta.Fields order
-			for _, field := range meta.Fields {
-				switch field.Type {
-				case "int32":
-					rec[field.Name] = toInt32(raw, cols, field.Name)
-				case "uint32":
-					rec[field.Name] = toUint32(raw, cols, field.Name)
-				case "float":
-					rec[field.Name] = toFloat32(raw, cols, field.Name)
-				case "string":
-					str := toString(raw, cols, field.Name)
-					rec[field.Name] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
-				case "Loc":
-					loc := make([]uint32, 17)
-					for i := 0; i < 16; i++ {
-						colName := fmt.Sprintf("%s_%s", field.Name, locLangs[i])
-						str := toString(raw, cols, colName)
-						loc[i] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
-					}
-					loc[16] = toUint32(raw, cols, fmt.Sprintf("%s_flags", field.Name))
-					rec[field.Name] = loc
-				}
-			}
+    outPath := filepath.Join(cfg.Paths.Export, meta.File)
+    if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil {
+        return fmt.Errorf("failed to create export directory: %w", err)
+    }
 
-			dbc.Records = append(dbc.Records, rec)
-		}
+    if err := WriteDBC(&dbc, &meta, outPath); err != nil {
+        return fmt.Errorf("failed to write DBC %s: %w", outPath, err)
+    }
 
-		// Recalculate header
-		dbc.Header.RecordCount = uint32(len(dbc.Records))
-		dbc.Header.FieldCount = calculateFieldCount(meta)
-		dbc.Header.RecordSize = calculateRecordSize(meta)
-		dbc.Header.StringBlockSize = uint32(len(dbc.StringBlock))
-
-		// Sanity check
-		if dbc.Header.RecordSize%4 != 0 {
-			return fmt.Errorf("record size %d not multiple of 4", dbc.Header.RecordSize)
-		}
-
-		// Write out
-		outPath := filepath.Join(cfg.Paths.Export, meta.File)
-		if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil {
-			return fmt.Errorf("failed to create export dir: %w", err)
-		}
-		if err := WriteDBC(&dbc, &meta, outPath); err != nil {
-			return fmt.Errorf("failed to rebuild %s: %w", meta.File, err)
-		}
-
-		fmt.Printf("Exported %s (%d records)\n", outPath, dbc.Header.RecordCount)
-	}
-
-	return nil
+    fmt.Printf("Exported %s\n", meta.File)
+    return nil
 }
 
 // --- Helpers ---
