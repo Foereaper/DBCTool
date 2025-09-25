@@ -66,23 +66,32 @@ func main() {
 	if len(argsWithoutGlobal) > 2 {
 		subArgs = argsWithoutGlobal[2:]
 	}
+    
+    cfg, created, err := loadOrInitConfig(globalConfigPath)
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
+	if created {
+		fmt.Printf("Config template created at %s. Please edit it and re-run.\n", &globalConfigPath)
+		return
+	}
 
 	switch cmd {
         case "read":
-            handleRead(&globalConfigPath, subArgs)
+            handleRead(cfg, subArgs)
         case "header":
-            handleHeader(&globalConfigPath, subArgs)
+            handleHeader(cfg, subArgs)
         case "import":
-            handleImport(&globalConfigPath, subArgs)
+            handleImport(cfg, subArgs)
         case "export":
-            handleExport(&globalConfigPath, subArgs)
+            handleExport(cfg, subArgs)
         default:
             fmt.Printf("Unknown command: %s\n\n", cmd)
             printUsage()
 	}
 }
 
-func handleRead(globalConfig *string, args []string) {
+func handleRead(cfg *Config, args []string) {
 	readCmd := flag.NewFlagSet("read", flag.ExitOnError)
 	dbcName := readCmd.String("name", "", "DBC file name (without extension)")
 	readCmd.StringVar(dbcName, "r", "", "DBC file name (shorthand)")
@@ -96,15 +105,6 @@ func handleRead(globalConfig *string, args []string) {
 	if *dbcName == "" {
 		fmt.Println("Error: --name/-r is required for read")
 		readCmd.Usage()
-		return
-	}
-
-	cfg, created, err := loadOrInitConfig(*globalConfig)
-	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
-	if created {
-		fmt.Printf("Config template created at %s. Please edit it and re-run.\n", *globalConfig)
 		return
 	}
 
@@ -126,7 +126,7 @@ func handleRead(globalConfig *string, args []string) {
 	}
 }
 
-func handleHeader(globalConfig *string, args []string) {
+func handleHeader(cfg *Config, args []string) {
 	headerCmd := flag.NewFlagSet("header", flag.ExitOnError)
 	dbcName := headerCmd.String("name", "", "DBC file name")
 	headerCmd.StringVar(dbcName, "H", "", "DBC file name (shorthand)")
@@ -135,15 +135,6 @@ func handleHeader(globalConfig *string, args []string) {
 	if *dbcName == "" {
 		fmt.Println("Error: --name/-H is required for header")
 		headerCmd.Usage()
-		return
-	}
-
-	cfg, created, err := loadOrInitConfig(*globalConfig)
-	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
-	if created {
-		fmt.Printf("Config template created at %s. Please edit it and re-run.\n", *globalConfig)
 		return
 	}
 
@@ -160,18 +151,9 @@ func handleHeader(globalConfig *string, args []string) {
 	fmt.Printf("  String Block Size: %d bytes\n", header.StringBlockSize)
 }
 
-func handleImport(globalConfig *string, args []string) {
+func handleImport(cfg *Config, args []string) {
 	importCmd := flag.NewFlagSet("import", flag.ExitOnError)
 	importCmd.Parse(args)
-
-	cfg, created, err := loadOrInitConfig(*globalConfig)
-	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
-	if created {
-		fmt.Printf("Config template created at %s. Please edit it and re-run.\n", *globalConfig)
-		return
-	}
 
 	dbcDB, err := openDB(cfg.DBC)
 	if err != nil {
@@ -186,18 +168,9 @@ func handleImport(globalConfig *string, args []string) {
 	fmt.Println("Import completed successfully!")
 }
 
-func handleExport(globalConfig *string, args []string) {
+func handleExport(cfg *Config, args []string) {
 	exportCmd := flag.NewFlagSet("export", flag.ExitOnError)
 	exportCmd.Parse(args)
-
-	cfg, created, err := loadOrInitConfig(*globalConfig)
-	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
-	if created {
-		fmt.Printf("Config template created at %s. Please edit it and re-run.\n", *globalConfig)
-		return
-	}
 
 	dbcDB, err := openDB(cfg.DBC)
 	if err != nil {
