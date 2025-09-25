@@ -93,17 +93,29 @@ dbctool <command> [options]
     dbctool header --name=Spell
     ```
 
--   **import** --- Import DBCs into the database
+    Options:
+
+    -   `--name, -r` : DBC file name without extension (required).
+
+-   **import** --- Import all DBCs into the database
 
     ``` bash
     dbctool import
     ```
 
--   **export** --- Export tables back into DBC files
+    Options:
+
+    -   `--name, -r` : DBC file name without extension (optional), imports only this DBC.
+
+-   **export** --- Export all tables back into DBC files
 
     ``` bash
     dbctool export
     ```
+
+    Options:
+
+    -   `--name, -r` : DBC file name without extension (optional), exports only this DBC.
 
 ### Global options
 
