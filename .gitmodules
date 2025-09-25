@@ -1,0 +1,6 @@
+[submodule "dep/mysql"]
+	path = dep/mysql
+	url = https://github.com/go-sql-driver/mysql
+[submodule "dep/edwards25519"]
+	path = dep/edwards25519
+	url = https://github.com/FiloSottile/edwards25519
