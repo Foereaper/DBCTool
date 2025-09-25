@@ -202,55 +202,90 @@ func createTable(db *sql.DB, tableName string, meta *MetaFile) error {
 
 // insertRecords inserts all DBC records into SQL
 func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) error {
-	for _, rec := range dbc.Records {
-		var columns []string
-		var placeholders []string
-		var values []interface{}
+	total := len(dbc.Records)
+	if total == 0 {
+		return nil
+	}
+    
+    // hard code batch size for now, this should be a config option
+    batchSize := 2000
 
-		for _, field := range meta.Fields {
-			switch field.Type {
-			case "int32", "uint32", "float":
-				columns = append(columns, fmt.Sprintf("`%s`", field.Name))
-				placeholders = append(placeholders, "?")
-				values = append(values, rec[field.Name])
-			case "string":
-				columns = append(columns, fmt.Sprintf("`%s`", field.Name))
-				placeholders = append(placeholders, "?")
-				offset := rec[field.Name].(uint32)
-				values = append(values, readString(dbc.StringBlock, offset))
-			case "Loc":
-				locArr := rec[field.Name].([]uint32)
-				numTexts := len(locArr) - 1 // last element is flags
-				for i, lang := range locLangs {
-					colName := fmt.Sprintf("%s_%s", field.Name, lang)
-					columns = append(columns, fmt.Sprintf("`%s`", colName))
-					placeholders = append(placeholders, "?")
+	// Transaction is optional, but speeds things up if you’re inserting many rows
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback() // safe rollback if Commit not reached
 
-					if i < numTexts {
-						// text field
-						values = append(values, readString(dbc.StringBlock, locArr[i]))
-					} else if i == numTexts {
-						// flags
-						values = append(values, locArr[numTexts])
-					} else {
-						// extra unused
-						values = append(values, nil)
+	columnsBase := make([]string, 0, len(meta.Fields)*len(locLangs))
+	for _, field := range meta.Fields {
+		switch field.Type {
+		case "int32", "uint32", "float", "string":
+			columnsBase = append(columnsBase, fmt.Sprintf("`%s`", field.Name))
+		case "Loc":
+			for _, lang := range locLangs {
+				columnsBase = append(columnsBase, fmt.Sprintf("`%s_%s`", field.Name, lang))
+			}
+		}
+	}
+
+	// process in batches
+	for start := 0; start < total; start += batchSize {
+		end := start + batchSize
+		if end > total {
+			end = total
+		}
+		records := dbc.Records[start:end]
+
+		var allPlaceholders []string
+		var allValues []interface{}
+
+		for _, rec := range records {
+			var rowPlaceholders []string
+			for _, field := range meta.Fields {
+				switch field.Type {
+				case "int32", "uint32", "float":
+					rowPlaceholders = append(rowPlaceholders, "?")
+					allValues = append(allValues, rec[field.Name])
+				case "string":
+					rowPlaceholders = append(rowPlaceholders, "?")
+					offset := rec[field.Name].(uint32)
+					allValues = append(allValues, readString(dbc.StringBlock, offset))
+				case "Loc":
+					locArr := rec[field.Name].([]uint32)
+					numTexts := len(locArr) - 1
+					for i := range locLangs {
+						if i < numTexts {
+							allValues = append(allValues, readString(dbc.StringBlock, locArr[i]))
+						} else if i == numTexts {
+							allValues = append(allValues, locArr[numTexts]) // flags
+						} else {
+							allValues = append(allValues, nil) // extra unused
+						}
+						rowPlaceholders = append(rowPlaceholders, "?")
 					}
 				}
 			}
+			allPlaceholders = append(allPlaceholders, "("+strings.Join(rowPlaceholders, ", ")+")")
 		}
 
 		query := fmt.Sprintf(
-			"INSERT INTO `%s` (%s) VALUES (%s) ON DUPLICATE KEY UPDATE %s",
+			"INSERT INTO `%s` (%s) VALUES %s ON DUPLICATE KEY UPDATE %s",
 			tableName,
-			strings.Join(columns, ", "),
-			strings.Join(placeholders, ", "),
-			generateUpdateAssignments(columns),
+			strings.Join(columnsBase, ", "),
+			strings.Join(allPlaceholders, ", "),
+			generateUpdateAssignments(columnsBase),
 		)
 
-		if _, err := db.Exec(query, values...); err != nil {
-			return fmt.Errorf("insert failed: %v", err)
+		if _, err := tx.Exec(query, allValues...); err != nil {
+			return fmt.Errorf("batch insert failed (%d–%d): %v", start, end, err)
 		}
+
+		fmt.Printf("Inserted batch %d–%d of %d\n", start+1, end, total)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
 	}
 
 	return nil
