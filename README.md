@@ -57,9 +57,9 @@ When run for the first time, `DBCTool` will generate a template
 }
 ```
 
--   **dbc**: database connection details.\
--   **paths.base**: directory containing original DBC files.\
--   **paths.export**: output folder for rebuilt/exported DBCs.\
+-   **dbc**: database connection details.
+-   **paths.base**: directory containing original DBC files.
+-   **paths.export**: output folder for rebuilt/exported DBCs.
 -   **paths.meta**: directory with `*.meta.json` files describing each
     DBC's schema.
 
