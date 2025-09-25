@@ -28,7 +28,7 @@ Clone the repository and build with Go:
 ``` bash
 git clone https://github.com/foereaper/dbctool.git
 cd dbctool
-go build -o dbctool
+go build -C src -o dbctool
 ```
 
 You need **Go 1.20+** and access to a **MySQL server**.
@@ -57,9 +57,9 @@ When run for the first time, `DBCTool` will generate a template
 }
 ```
 
--   **dbc**: database connection details.\
--   **paths.base**: directory containing original DBC files.\
--   **paths.export**: output folder for rebuilt/exported DBCs.\
+-   **dbc**: database connection details.
+-   **paths.base**: directory containing original DBC files.
+-   **paths.export**: output folder for rebuilt/exported DBCs.
 -   **paths.meta**: directory with `*.meta.json` files describing each
     DBC's schema.
 
