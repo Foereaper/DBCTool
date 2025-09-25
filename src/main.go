@@ -115,7 +115,7 @@ func handleRead(cfg *Config, args []string) {
 
 	fmt.Printf("Read %s:\n", meta.File)
 	fmt.Printf("Record %d sample:\n", *record)
-	PrintRecord(dbc.Records[*record])
+	PrintRecord(dbc.Records[*record], meta, dbc.StringBlock)
 
 	if *writeOut {
 		outPath := filepath.Join(cfg.Paths.Export, meta.File)

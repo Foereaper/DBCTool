@@ -273,7 +273,7 @@ func readString(stringBlock []byte, offset uint32) string {
 	return string(stringBlock[offset:end])
 }
 
-func PrintRecord(rec Record) {
+func PrintRecord(rec Record, meta *MetaFile, stringBlock []byte) {
 	// Extract and sort keys
 	keys := make([]string, 0, len(rec))
 	for k := range rec {
@@ -283,6 +283,24 @@ func PrintRecord(rec Record) {
 
 	// Print in sorted order
 	for _, k := range keys {
-		fmt.Printf("  %s: %v\n", k, rec[k])
+		val := rec[k]
+
+		// Find field type from meta
+		var fieldType string
+		for _, f := range meta.Fields {
+			if f.Name == k {
+				fieldType = f.Type
+				break
+			}
+		}
+
+		// If it's a string field, resolve the offset
+		if fieldType == "string" {
+			offset := val.(uint32)
+			str := readString(stringBlock, offset)
+			fmt.Printf("  %s: %v (\"%s\")\n", k, offset, str)
+		} else {
+			fmt.Printf("  %s: %v\n", k, val)
+		}
 	}
 }

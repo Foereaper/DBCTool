@@ -1,0 +1,34 @@
+{
+  "file": "ItemDisplayInfo.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "leftModel", "type": "string"},
+    {"name": "rightModel", "type": "string"},
+    {"name": "leftModelTexture", "type": "string"},
+    {"name": "rightModelTexture", "type": "string"},
+    {"name": "icon1", "type": "string"},
+    {"name": "icon2", "type": "string"},
+    {"name": "geosetGroup1", "type": "uint32"},
+    {"name": "geosetGroup2", "type": "uint32"},
+    {"name": "geosetGroup3", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "spellVisualId", "type": "uint32"},
+    {"name": "groupSoundIndex", "type": "uint32"},
+    {"name": "helmetGeosetVisMale", "type": "uint32"},
+    {"name": "helmetGeosetVisFemale", "type": "uint32"},
+    {"name": "upperArmTexture", "type": "string"},
+    {"name": "lowerArmTexture", "type": "string"},
+    {"name": "handsTexture", "type": "string"},
+    {"name": "upperTorsoTexture", "type": "string"},
+    {"name": "lowerTorsoTexture", "type": "string"},
+    {"name": "upperLegTexture", "type": "string"},
+    {"name": "lowerLegTexture", "type": "string"},
+    {"name": "footTexture", "type": "string"},
+    {"name": "itemVisual", "type": "int32"},
+    {"name": "particleColourId", "type": "uint32"}
+  ]
+}
