@@ -1,0 +1,73 @@
+name: Build DBCTool
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '**'
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'build'))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          cache: false
+          go-version: '>=1.20'
+
+      - name: Install dependencies
+        run: |
+          go mod tidy -C src
+
+      - name: Make build dir
+        run: |
+          mkdir -p bin
+
+      # Linux
+      - name: Build Linux binary
+        run: |
+          GOOS=linux GOARCH=amd64 go build -C src -o ../bin/dbctool-linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbctool-linux
+          path: bin/dbctool-linux
+
+      # MacOS Intel
+      - name: Build MacOS Intel binary
+        run: |
+          GOOS=darwin GOARCH=amd64 go build -C src -o ../bin/dbctool-macos-intel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbctool-macos-intel
+          path: bin/dbctool-macos-intel
+
+      # MacOS ARM64
+      - name: Build MacOS ARM64 binary
+        run: |
+          GOOS=darwin GOARCH=arm64 go build -C src -o ../bin/dbctool-macos-arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbctool-macos-arm64
+          path: bin/dbctool-macos-arm64
+
+      # Windows
+      - name: Build Windows binary
+        run: |
+          GOOS=windows GOARCH=amd64 go build -C src -o ../bin/dbctool.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbctool-windows
+          path: bin/dbctool.exe
