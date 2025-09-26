@@ -2,24 +2,23 @@
   "file": "Talent.dbc",
   "primaryKeys": ["id"],
   "uniqueKeys": [
-    ["specId", "tierId", "columnIndex", "allowForPetFlags1", "allowForPetFlags2"]
+    ["spec_id", "tier_id", "column_index", "allow_for_pet_flags_1", "allow_for_pet_flags_2"]
   ],
   "sortOrder": [
-    {"name": "specId", "direction": "ASC"},
-    {"name": "tierId", "direction": "ASC"},
-    {"name": "columnIndex", "direction": "ASC"}
+    {"name": "spec_id", "direction": "ASC"},
+    {"name": "tier_id", "direction": "ASC"},
+    {"name": "column_index", "direction": "ASC"}
   ],
   "fields": [
     {"name": "id", "type": "uint32"},
-    {"name": "specId", "type": "uint32"},
-    {"name": "tierId", "type": "uint32"},
-    {"name": "columnIndex", "type": "uint32"},
+    {"name": "spec_id", "type": "uint32"},
+    {"name": "tier_id", "type": "uint32"},
+    {"name": "column_index", "type": "uint32"},
     {"name": "rank", "type": "uint32", "count":9},
-    {"name": "preReqTalent", "type": "uint32", "count":3},
-    {"name": "preReqRank", "type": "uint32", "count":3},
+    {"name": "pre_req_talent", "type": "uint32", "count":3},
+    {"name": "pre_req_rank", "type": "uint32", "count":3},
     {"name": "flags", "type": "uint32"},
-    {"name": "reqSpellId", "type": "uint32"},
-    {"name": "allowForPetFlags1", "type": "uint32"},
-    {"name": "allowForPetFlags2", "type": "uint32"}
+    {"name": "req_spell_id", "type": "uint32"},
+    {"name": "allow_for_pet_flags", "type": "uint32", "count":2}
   ]
 }

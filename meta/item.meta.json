@@ -7,11 +7,11 @@
   "fields": [
     {"name": "id", "type": "uint32"},
     {"name": "class", "type": "uint32"},
-    {"name": "subClass", "type": "uint32"},
-    {"name": "soundOverrideSubclass", "type": "int32"},
+    {"name": "subclass", "type": "uint32"},
+    {"name": "sound_override_subclass", "type": "int32"},
     {"name": "material", "type": "int32"},
-    {"name": "displayId", "type": "uint32"},
-    {"name": "inventoryType", "type": "uint32"},
+    {"name": "display_id", "type": "uint32"},
+    {"name": "inventory_type", "type": "uint32"},
     {"name": "sheath", "type": "uint32"}
   ]
 }

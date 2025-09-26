@@ -2,24 +2,24 @@
   "file": "Achievement_Criteria.dbc",
   "primaryKeys": ["id"],
   "sortOrder": [
-    {"name": "uiOrder", "direction": "ASC"},
+    {"name": "ui_order", "direction": "ASC"},
     {"name": "id", "direction": "ASC"}
   ],
   "fields": [
     {"name": "id", "type": "uint32"},
-    {"name": "achievementId", "type": "uint32"},
+    {"name": "achievement_id", "type": "uint32"},
     {"name": "type", "type": "uint32"},
-    {"name": "reqAssetId", "type": "uint32"},
-    {"name": "reqAssetCount", "type": "uint32"},
-    {"name": "startEvent", "type": "uint32"},
-    {"name": "startAssetId", "type": "uint32"},
-    {"name": "failEvent", "type": "uint32"},
-    {"name": "failAssetId", "type": "uint32"},
+    {"name": "req_asset_id", "type": "uint32"},
+    {"name": "req_asset_count", "type": "uint32"},
+    {"name": "start_event", "type": "uint32"},
+    {"name": "start_asset_id", "type": "uint32"},
+    {"name": "fail_event", "type": "uint32"},
+    {"name": "fail_asset_id", "type": "uint32"},
     {"name": "desc", "type": "Loc"},
     {"name": "flags", "type": "uint32"},
-    {"name": "timerStartEvent", "type": "uint32"},
-    {"name": "timerAssetId", "type": "uint32"},
-    {"name": "timerLimit", "type": "uint32"},
-    {"name": "uiOrder", "type": "uint32"}
+    {"name": "timer_start_event", "type": "uint32"},
+    {"name": "timer_asset_id", "type": "uint32"},
+    {"name": "timer_limit", "type": "uint32"},
+    {"name": "ui_order", "type": "uint32"}
   ]
 }

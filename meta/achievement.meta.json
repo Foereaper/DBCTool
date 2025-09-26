@@ -2,7 +2,7 @@
   "file": "Achievement.dbc",
   "primaryKeys": ["id"],
   "sortOrder": [
-    {"name": "orderInCategory", "direction": "ASC"},
+    {"name": "order_in_category", "direction": "ASC"},
     {"name": "id", "direction": "ASC"}
   ],
   "fields": [
@@ -14,11 +14,11 @@
     {"name": "desc", "type": "Loc"},
     {"name": "category", "type": "uint32"},
     {"name": "points", "type": "uint32"},
-    {"name": "orderInCategory", "type": "uint32"},
+    {"name": "order_in_category", "type": "uint32"},
     {"name": "flags", "type": "uint32"},
-    {"name": "spellIcon", "type": "uint32"},
+    {"name": "spell_icon", "type": "uint32"},
     {"name": "reward", "type": "Loc"},
-    {"name": "minCriteriaDemand", "type": "uint32"},
-    {"name": "linkedAchievement", "type": "uint32"}
+    {"name": "min_criteria_demand", "type": "uint32"},
+    {"name": "linked_achievement", "type": "uint32"}
   ]
 }
