@@ -141,30 +141,42 @@ func tableExists(db *sql.DB, table string) bool {
 func createTable(db *sql.DB, tableName string, meta *MetaFile) error {
 	var columns []string
 
-	for _, field := range meta.Fields {
-		switch field.Type {
-		case "int32":
-			columns = append(columns, fmt.Sprintf("`%s` INT", field.Name))
-		case "uint32":
-			columns = append(columns, fmt.Sprintf("`%s` BIGINT UNSIGNED", field.Name))
-		case "float":
-			columns = append(columns, fmt.Sprintf("`%s` FLOAT", field.Name))
-		case "string":
-			columns = append(columns, fmt.Sprintf("`%s` TEXT", field.Name))
-		case "Loc":
-			for i, lang := range locLangs {
-				colName := fmt.Sprintf("%s_%s", field.Name, lang)
-				if i == len(locLangs)-1 {
-					// last element → flags as INT UNSIGNED
-					columns = append(columns, fmt.Sprintf("`%s` INT UNSIGNED", colName))
-				} else {
-					columns = append(columns, fmt.Sprintf("`%s` TEXT", colName))
-				}
-			}
-		default:
-			return fmt.Errorf("unknown field type: %s", field.Type)
-		}
-	}
+    for _, field := range meta.Fields {
+        repeat := int(field.Count)
+        if repeat == 0 {
+            repeat = 1
+        }
+
+        for j := 0; j < repeat; j++ {
+            colName := field.Name
+            if field.Count > 1 {
+                colName = fmt.Sprintf("%s_%d", field.Name, j+1)
+            }
+
+            switch field.Type {
+            case "int32":
+                columns = append(columns, fmt.Sprintf("`%s` INT", colName))
+            case "uint32":
+                columns = append(columns, fmt.Sprintf("`%s` BIGINT UNSIGNED", colName))
+            case "float":
+                columns = append(columns, fmt.Sprintf("`%s` FLOAT", colName))
+            case "string":
+                columns = append(columns, fmt.Sprintf("`%s` TEXT", colName))
+            case "Loc":
+                for i, lang := range locLangs {
+                    locCol := fmt.Sprintf("%s_%s", colName, lang)
+                    if i == len(locLangs)-1 {
+                        // last element → flags as INT UNSIGNED
+                        columns = append(columns, fmt.Sprintf("`%s` INT UNSIGNED", locCol))
+                    } else {
+                        columns = append(columns, fmt.Sprintf("`%s` TEXT", locCol))
+                    }
+                }
+            default:
+                return fmt.Errorf("unknown field type: %s", field.Type)
+            }
+        }
+    }
 
 	// Default primary key
     pk := "`ID`"
@@ -215,16 +227,27 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
 	defer tx.Rollback() // safe rollback if Commit not reached
 
 	columnsBase := make([]string, 0, len(meta.Fields)*len(locLangs))
-	for _, field := range meta.Fields {
-		switch field.Type {
-		case "int32", "uint32", "float", "string":
-			columnsBase = append(columnsBase, fmt.Sprintf("`%s`", field.Name))
-		case "Loc":
-			for _, lang := range locLangs {
-				columnsBase = append(columnsBase, fmt.Sprintf("`%s_%s`", field.Name, lang))
-			}
-		}
-	}
+    for _, field := range meta.Fields {
+        repeat := int(field.Count)
+        if repeat == 0 {
+            repeat = 1
+        }
+
+        for j := 0; j < repeat; j++ {
+            colName := field.Name
+            if field.Count > 1 {
+                colName = fmt.Sprintf("%s_%d", field.Name, j+1)
+            }
+            switch field.Type {
+            case "int32", "uint32", "float", "string":
+                columnsBase = append(columnsBase, fmt.Sprintf("`%s`", colName))
+            case "Loc":
+                for _, lang := range locLangs {
+                    columnsBase = append(columnsBase, fmt.Sprintf("`%s_%s`", colName, lang))
+                }
+            }
+        }
+    }
     
     // calculate batch size
     colsPerRow := len(columnsBase)
@@ -246,34 +269,47 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
 		var allPlaceholders []string
 		var allValues []interface{}
 
-		for _, rec := range records {
-			var rowPlaceholders []string
-			for _, field := range meta.Fields {
-				switch field.Type {
-				case "int32", "uint32", "float":
-					rowPlaceholders = append(rowPlaceholders, "?")
-					allValues = append(allValues, rec[field.Name])
-				case "string":
-					rowPlaceholders = append(rowPlaceholders, "?")
-					offset := rec[field.Name].(uint32)
-					allValues = append(allValues, readString(dbc.StringBlock, offset))
-				case "Loc":
-					locArr := rec[field.Name].([]uint32)
-					numTexts := len(locArr) - 1
-					for i := range locLangs {
-						if i < numTexts {
-							allValues = append(allValues, readString(dbc.StringBlock, locArr[i]))
-						} else if i == numTexts {
-							allValues = append(allValues, locArr[numTexts]) // flags
-						} else {
-							allValues = append(allValues, nil) // extra unused
-						}
-						rowPlaceholders = append(rowPlaceholders, "?")
-					}
-				}
-			}
-			allPlaceholders = append(allPlaceholders, "("+strings.Join(rowPlaceholders, ", ")+")")
-		}
+        for _, rec := range records {
+            var rowPlaceholders []string
+
+            for _, field := range meta.Fields {
+                repeat := int(field.Count)
+                if repeat == 0 {
+                    repeat = 1
+                }
+
+                for j := 0; j < repeat; j++ {
+                    name := field.Name
+                    if field.Count > 1 {
+                        name = fmt.Sprintf("%s_%d", field.Name, j+1)
+                    }
+                    switch field.Type {
+                    case "int32", "uint32", "float":
+                        rowPlaceholders = append(rowPlaceholders, "?")
+                        allValues = append(allValues, rec[name])
+                    case "string":
+                        rowPlaceholders = append(rowPlaceholders, "?")
+                        offset := rec[name].(uint32)
+                        allValues = append(allValues, readString(dbc.StringBlock, offset))
+                    case "Loc":
+                        locArr := rec[name].([]uint32)
+                        numTexts := len(locArr) - 1
+                        for i := range locLangs {
+                            if i < numTexts {
+                                allValues = append(allValues, readString(dbc.StringBlock, locArr[i]))
+                            } else if i == numTexts {
+                                allValues = append(allValues, locArr[numTexts]) // flags
+                            } else {
+                                allValues = append(allValues, nil) // extra unused
+                            }
+                            rowPlaceholders = append(rowPlaceholders, "?")
+                        }
+                    }
+                }
+            }
+
+            allPlaceholders = append(allPlaceholders, "("+strings.Join(rowPlaceholders, ", ")+")")
+        }
 
 		query := fmt.Sprintf(
 			"INSERT INTO `%s` (%s) VALUES %s ON DUPLICATE KEY UPDATE %s",

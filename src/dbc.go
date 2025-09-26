@@ -12,7 +12,6 @@ import (
 	"math"
 	"os"
     "path/filepath"
-    "sort"
 )
 
 type DBCHeader struct {
@@ -29,8 +28,9 @@ type SortField struct {
 }
 
 type FieldMeta struct {
-	Name string `json:"name"`
-	Type string `json:"type"` // int32, uint32, float, string, Loc
+	Name  string `json:"name"`
+	Type  string `json:"type"` // int32, uint32, float, string, Loc
+    Count uint32 `json:"count,omitempty"`
 }
 
 type MetaFile struct {
@@ -120,37 +120,56 @@ func ParseRecords(data []byte, start int, header DBCHeader, meta MetaFile, strin
         offset := 0
 
         for _, field := range meta.Fields {
-            switch field.Type {
-            case "int32":
-                val := int32(binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4]))
-                rec[field.Name] = val
-                offset += 4
-            case "uint32":
-                val := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
-                rec[field.Name] = val
-                offset += 4
-            case "float":
-                bits := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
-                rec[field.Name] = math.Float32frombits(bits)
-                offset += 4
-            case "string":
-                strOffset := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
-                rec[field.Name] = strOffset
-                offset += 4
-            case "Loc":
-                loc := make([]uint32, 17)
-                for col := 0; col < 17; col++ {
-                    val := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
-                    loc[col] = val
-                    offset += 4
+            repeat := int(field.Count)
+            if repeat == 0 {
+                repeat = 1
+            }
+
+            for j := 0; j < repeat; j++ {
+                name := field.Name
+                if field.Count > 1 {
+                    name = fmt.Sprintf("%s_%d", field.Name, j+1)
                 }
-                rec[field.Name] = loc
-            default:
-                return nil, fmt.Errorf("unknown field type: %s", field.Type)
+
+                switch field.Type {
+                case "int32":
+                    val := int32(binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4]))
+                    rec[name] = val
+                    offset += 4
+
+                case "uint32":
+                    val := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
+                    rec[name] = val
+                    offset += 4
+
+                case "float":
+                    bits := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
+                    rec[name] = math.Float32frombits(bits)
+                    offset += 4
+
+                case "string":
+                    strOffset := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
+                    rec[name] = strOffset
+                    offset += 4
+
+                case "Loc":
+                    loc := make([]uint32, 17)
+                    for col := 0; col < 17; col++ {
+                        val := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
+                        loc[col] = val
+                        offset += 4
+                    }
+                    rec[name] = loc
+
+                default:
+                    return nil, fmt.Errorf("unknown field type: %s", field.Type)
+                }
             }
         }
+
         records = append(records, rec)
     }
+
     return records, nil
 }
 
@@ -224,31 +243,46 @@ func WriteDBC(dbc *DBCFile, meta *MetaFile, outPath string) error {
 	// Write records
 	recordData := make([]byte, dbc.Header.RecordCount*dbc.Header.RecordSize)
 	offset := 0
+
 	for _, rec := range dbc.Records {
 		for _, field := range meta.Fields {
-			switch field.Type {
-			case "int32":
-                binary.LittleEndian.PutUint32(recordData[offset:offset+4], uint32(rec[field.Name].(int32)))
-				offset += 4
-			case "uint32":
-				binary.LittleEndian.PutUint32(recordData[offset:offset+4], rec[field.Name].(uint32))
-				offset += 4
-			case "float":
-				bits := math.Float32bits(rec[field.Name].(float32))
-				binary.LittleEndian.PutUint32(recordData[offset:offset+4], bits)
-				offset += 4
-			case "string":
-				binary.LittleEndian.PutUint32(recordData[offset:offset+4], rec[field.Name].(uint32))
-				offset += 4
-			case "Loc":
-				loc := rec[field.Name].([]uint32)
-				for _, v := range loc {
-					binary.LittleEndian.PutUint32(recordData[offset:offset+4], v)
+			repeat := int(field.Count)
+			if repeat == 0 {
+				repeat = 1
+			}
+
+			for j := 0; j < repeat; j++ {
+				name := field.Name
+				if field.Count > 1 {
+					name = fmt.Sprintf("%s_%d", field.Name, j+1)
+				}
+
+				switch field.Type {
+				case "int32":
+					binary.LittleEndian.PutUint32(recordData[offset:offset+4],uint32(rec[name].(int32)))
 					offset += 4
+				case "uint32":
+					binary.LittleEndian.PutUint32(recordData[offset:offset+4],rec[name].(uint32))
+					offset += 4
+				case "float":
+					bits := math.Float32bits(rec[name].(float32))
+					binary.LittleEndian.PutUint32(recordData[offset:offset+4],bits)
+					offset += 4
+				case "string":
+					binary.LittleEndian.PutUint32(recordData[offset:offset+4],rec[name].(uint32))
+					offset += 4
+
+				case "Loc":
+					loc := rec[name].([]uint32)
+					for _, v := range loc {
+						binary.LittleEndian.PutUint32(recordData[offset:offset+4], v)
+						offset += 4
+					}
 				}
 			}
 		}
 	}
+
 	if _, err := outFile.Write(recordData); err != nil {
 		return err
 	}
@@ -274,33 +308,42 @@ func readString(stringBlock []byte, offset uint32) string {
 }
 
 func PrintRecord(rec Record, meta *MetaFile, stringBlock []byte) {
-	// Extract and sort keys
-	keys := make([]string, 0, len(rec))
-	for k := range rec {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
+    for _, field := range meta.Fields {
+        repeat := int(field.Count)
+        if repeat == 0 {
+            repeat = 1
+        }
 
-	// Print in sorted order
-	for _, k := range keys {
-		val := rec[k]
+        for j := 0; j < repeat; j++ {
+            name := field.Name
+            if field.Count > 1 {
+                name = fmt.Sprintf("%s_%d", field.Name, j+1)
+            }
 
-		// Find field type from meta
-		var fieldType string
-		for _, f := range meta.Fields {
-			if f.Name == k {
-				fieldType = f.Type
-				break
-			}
-		}
+            val, exists := rec[name]
+            if !exists {
+                fmt.Printf("  %s: <missing>\n", name)
+                continue
+            }
 
-		// If it's a string field, resolve the offset
-		if fieldType == "string" {
-			offset := val.(uint32)
-			str := readString(stringBlock, offset)
-			fmt.Printf("  %s: %v (\"%s\")\n", k, offset, str)
-		} else {
-			fmt.Printf("  %s: %v\n", k, val)
-		}
-	}
+            switch field.Type {
+            case "string":
+                offset := val.(uint32)
+                str := readString(stringBlock, offset)
+                fmt.Printf("  %s: %v (\"%s\")\n", name, offset, str)
+            case "Loc":
+                locArr := val.([]uint32)
+                for i, lang := range locLangs {
+                    if i < len(locArr)-1 {
+                        str := readString(stringBlock, locArr[i])
+                        fmt.Printf("  %s_%s: %v (\"%s\")\n", name, lang, locArr[i], str)
+                    } else {
+                        fmt.Printf("  %s_flags: %v\n", name, locArr[i])
+                    }
+                }
+            default:
+                fmt.Printf("  %s: %v\n", name, val)
+            }
+        }
+    }
 }

@@ -1,0 +1,16 @@
+{
+  "file": "ItemSet.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "item", "type": "uint32", "count":17},
+    {"name": "effectSpellId", "type": "uint32", "count":8},
+    {"name": "effectItemCount", "type": "uint32", "count":8},
+    {"name": "reqSkillId", "type": "uint32"},
+    {"name": "reqSkillRank", "type": "uint32"}
+  ]
+}

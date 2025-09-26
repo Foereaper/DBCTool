@@ -72,25 +72,37 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
 
         rec := make(Record)
         for _, field := range meta.Fields {
-            switch field.Type {
-            case "int32":
-                rec[field.Name] = toInt32(raw, cols, field.Name)
-            case "uint32":
-                rec[field.Name] = toUint32(raw, cols, field.Name)
-            case "float":
-                rec[field.Name] = toFloat32(raw, cols, field.Name)
-            case "string":
-                str := toString(raw, cols, field.Name)
-                rec[field.Name] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
-            case "Loc":
-                loc := make([]uint32, 17)
-                for i := 0; i < 16; i++ {
-                    colName := fmt.Sprintf("%s_%s", field.Name, locLangs[i])
-                    str := toString(raw, cols, colName)
-                    loc[i] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
+            repeat := int(field.Count)
+            if repeat == 0 {
+                repeat = 1
+            }
+
+            for j := 0; j < repeat; j++ {
+                name := field.Name
+                if field.Count > 1 {
+                    name = fmt.Sprintf("%s_%d", field.Name, j+1)
                 }
-                loc[16] = toUint32(raw, cols, fmt.Sprintf("%s_flags", field.Name))
-                rec[field.Name] = loc
+
+                switch field.Type {
+                case "int32":
+                    rec[name] = toInt32(raw, cols, name)
+                case "uint32":
+                    rec[name] = toUint32(raw, cols, name)
+                case "float":
+                    rec[name] = toFloat32(raw, cols, name)
+                case "string":
+                    str := toString(raw, cols, name)
+                    rec[name] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
+                case "Loc":
+                    loc := make([]uint32, 17)
+                    for i := 0; i < 16; i++ {
+                        colName := fmt.Sprintf("%s_%s", name, locLangs[i])
+                        str := toString(raw, cols, colName)
+                        loc[i] = getStringOffset(str, &dbc.StringBlock, stringOffsets)
+                    }
+                    loc[16] = toUint32(raw, cols, fmt.Sprintf("%s_flags", name))
+                    rec[name] = loc
+                }
             }
         }
         dbc.Records = append(dbc.Records, rec)
@@ -145,11 +157,18 @@ func getStringOffset(s string, block *[]byte, offsets map[string]uint32) uint32 
 func calculateRecordSize(meta MetaFile) uint32 {
 	size := 0
 	for _, f := range meta.Fields {
-		switch f.Type {
-		case "int32", "uint32", "float", "string":
-			size += 4
-		case "Loc":
-			size += 4 * 17
+		repeat := int(f.Count)
+		if repeat == 0 {
+			repeat = 1
+		}
+
+		for j := 0; j < repeat; j++ {
+			switch f.Type {
+			case "int32", "uint32", "float", "string":
+				size += 4
+			case "Loc":
+				size += 4 * 17
+			}
 		}
 	}
 	return uint32(size)
@@ -158,10 +177,17 @@ func calculateRecordSize(meta MetaFile) uint32 {
 func calculateFieldCount(meta MetaFile) uint32 {
 	count := 0
 	for _, f := range meta.Fields {
-		if f.Type == "Loc" {
-			count += 17
-		} else {
-			count++
+		repeat := int(f.Count)
+		if repeat == 0 {
+			repeat = 1
+		}
+
+		for j := 0; j < repeat; j++ {
+			if f.Type == "Loc" {
+				count += 17
+			} else {
+				count++
+			}
 		}
 	}
 	return uint32(count)
