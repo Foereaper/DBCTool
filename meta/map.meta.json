@@ -1,0 +1,27 @@
+{
+  "file": "Map.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "directory", "type": "string"},
+    {"name": "instance_type", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "pvp", "type": "uint32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "area_table_id", "type": "uint32"},
+    {"name": "desc_0", "type": "Loc"},
+    {"name": "desc_1", "type": "Loc"},
+    {"name": "loading_screen_id", "type": "uint32"},
+    {"name": "minimap_icon_scale", "type": "float"},
+    {"name": "corpse_map_id", "type": "int32"},
+    {"name": "corpse_x", "type": "float"},
+    {"name": "corpse_y", "type": "float"},
+    {"name": "time_override", "type": "int32"},
+    {"name": "expansion", "type": "uint32"},
+    {"name": "raid_offset", "type": "uint32"},
+    {"name": "max_players", "type": "uint32"}
+  ]
+}

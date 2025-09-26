@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+    "strconv"
 	"strings"
 )
 
@@ -221,8 +222,19 @@ func toUint32(raw []interface{}, cols []string, name string) uint32 {
 func toFloat32(raw []interface{}, cols []string, name string) float32 {
 	for i, col := range cols {
 		if col == name && raw[i] != nil {
-			if v, ok := raw[i].(float64); ok {
+			switch v := raw[i].(type) {
+			case float64:
 				return float32(v)
+			case float32:
+				return v
+			case []byte:
+				if f, err := strconv.ParseFloat(string(v), 64); err == nil {
+					return float32(f)
+				}
+			case string:
+				if f, err := strconv.ParseFloat(v, 64); err == nil {
+					return float32(f)
+				}
 			}
 		}
 	}
