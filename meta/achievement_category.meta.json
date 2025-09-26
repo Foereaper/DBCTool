@@ -1,0 +1,14 @@
+{
+  "file": "Achievement_Category.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "uiOrder", "direction": "ASC"},
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "parentId", "type": "int32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "uiOrder", "type": "uint32"}
+  ]
+}
