@@ -16,9 +16,9 @@ import (
 )
 
 var locLangs = []string{
-	"enUS", "koKR", "frFR", "deDE", "zhCN", "zhTW",
-	"esES", "esMX", "ruRU", "jaJP", "ptPT", "itIT",
-	"unused1", "unused2", "unused3", "unused4", "flags",
+	"enus", "kokr", "frfr", "dede", "zhcn", "zhtw",
+	"eses", "esmx", "ruru", "jajp", "ptpt", "itit",
+	"unused_1", "unused_2", "unused_3", "unused_4", "flags",
 }
 
 // ImportDBCs scans the meta directory and imports all DBCs
