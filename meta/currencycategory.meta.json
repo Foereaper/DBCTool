@@ -1,0 +1,13 @@
+{
+  "file": "CurrencyCategory.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "flags", "direction": "ASC"},
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "name", "type": "Loc"}
+  ]
+}

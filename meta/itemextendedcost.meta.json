@@ -1,0 +1,17 @@
+{
+  "file": "ItemExtendedCost.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "honor_points", "type": "uint32"},
+    {"name": "arena_points", "type": "uint32"},
+    {"name": "req_arena_slot", "type": "uint32"},
+    {"name": "req_item", "type": "uint32", "count":5},
+    {"name": "req_item_cost", "type": "uint32", "count":5},
+    {"name": "req_arena_rating", "type": "uint32"},
+    {"name": "purchase_group", "type": "uint32"}
+  ]
+}
