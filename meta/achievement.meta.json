@@ -6,19 +6,19 @@
     {"name": "id", "direction": "ASC"}
   ],
   "fields": [
-    {"name": "id", "type": "int32"},
+    {"name": "id", "type": "uint32"},
     {"name": "faction", "type": "int32"},
     {"name": "map", "type": "int32"},
-    {"name": "previous", "type": "int32"},
+    {"name": "previous", "type": "uint32"},
     {"name": "name", "type": "Loc"},
     {"name": "desc", "type": "Loc"},
-    {"name": "category", "type": "int32"},
-    {"name": "points", "type": "int32"},
-    {"name": "orderInCategory", "type": "int32"},
-    {"name": "flags", "type": "int32"},
-    {"name": "spellIcon", "type": "int32"},
+    {"name": "category", "type": "uint32"},
+    {"name": "points", "type": "uint32"},
+    {"name": "orderInCategory", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "spellIcon", "type": "uint32"},
     {"name": "reward", "type": "Loc"},
-    {"name": "minCriteriaDemand", "type": "int32"},
-    {"name": "linkedAchievement", "type": "int32"}
+    {"name": "minCriteriaDemand", "type": "uint32"},
+    {"name": "linkedAchievement", "type": "uint32"}
   ]
 }
