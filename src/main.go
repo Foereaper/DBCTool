@@ -107,20 +107,15 @@ func handleRead(cfg *Config, args []string) {
 		readCmd.Usage()
 		return
 	}
-
-    header, err := ReadDBCHeader(*dbcName, cfg)
-	if err != nil {
-		log.Fatalf("Failed to read DBC header: %v", err)
-	}
-    
-    if header.RecordCount <= uint32(*record) {
-        log.Fatalf("Sample record index too large, max records: %d", header.RecordCount)
-    }
     
 	dbc, meta, err := ReadDBCFile(*dbcName, cfg)
 	if err != nil {
 		log.Fatalf("Failed to read DBC: %v", err)
 	}
+    
+    if dbc.Header.RecordCount <= uint32(*record) {
+        log.Fatalf("Sample record index too large, records in file: 0-%d", dbc.Header.RecordCount-1)
+    }
 
 	fmt.Printf("Read %s:\n", meta.File)
 	fmt.Printf("Record %d sample:\n", *record)
