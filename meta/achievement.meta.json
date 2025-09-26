@@ -2,6 +2,7 @@
   "file": "Achievement.dbc",
   "primaryKeys": ["id"],
   "sortOrder": [
+    {"name": "orderInCategory", "direction": "ASC"},
     {"name": "id", "direction": "ASC"}
   ],
   "fields": [
