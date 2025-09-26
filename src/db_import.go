@@ -206,9 +206,6 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
 	if total == 0 {
 		return nil
 	}
-    
-    // hard code batch size for now, this should be a config option
-    batchSize := 2000
 
 	// Transaction is optional, but speeds things up if you’re inserting many rows
 	tx, err := db.Begin()
@@ -228,6 +225,15 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
 			}
 		}
 	}
+    
+    // calculate batch size
+    colsPerRow := len(columnsBase)
+    maxPlaceholders := 60000 // stay below 65535 max batch size
+    batchSize := maxPlaceholders / colsPerRow
+
+    if batchSize > 2000 {
+        batchSize = 2000
+    }
 
 	// process in batches
 	for start := 0; start < total; start += batchSize {
