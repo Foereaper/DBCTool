@@ -1,0 +1,14 @@
+{
+  "file": "CharTitles.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "condition", "type": "uint32"},
+    {"name": "male", "type": "Loc"},
+    {"name": "female", "type": "Loc"},
+    {"name": "mask_id", "type": "uint32"}
+  ]
+}
