@@ -94,16 +94,16 @@ func main() {
 func handleRead(cfg *Config, args []string) {
 	readCmd := flag.NewFlagSet("read", flag.ExitOnError)
 	dbcName := readCmd.String("name", "", "DBC file name (without extension)")
-	readCmd.StringVar(dbcName, "r", "", "DBC file name (shorthand)")
+	readCmd.StringVar(dbcName, "n", "", "DBC file name (shorthand)")
 	record := readCmd.Int("record", 0, "Sample record index to display")
-	readCmd.IntVar(record, "i", 0, "Sample record index (shorthand)")
+	readCmd.IntVar(record, "r", 0, "Sample record index (shorthand)")
 	writeOut := readCmd.Bool("out", false, "Rebuild and write DBC to export directory")
 	readCmd.BoolVar(writeOut, "o", false, "Rebuild and write DBC (shorthand)")
 
 	readCmd.Parse(args)
 
 	if *dbcName == "" {
-		fmt.Println("Error: --name/-r is required for read")
+		fmt.Println("Error: --name/-n is required for read")
 		readCmd.Usage()
 		return
 	}
@@ -133,11 +133,11 @@ func handleRead(cfg *Config, args []string) {
 func handleHeader(cfg *Config, args []string) {
 	headerCmd := flag.NewFlagSet("header", flag.ExitOnError)
 	dbcName := headerCmd.String("name", "", "DBC file name")
-	headerCmd.StringVar(dbcName, "H", "", "DBC file name (shorthand)")
+	headerCmd.StringVar(dbcName, "n", "", "DBC file name (shorthand)")
 	headerCmd.Parse(args)
 
 	if *dbcName == "" {
-		fmt.Println("Error: --name/-H is required for header")
+		fmt.Println("Error: --name/-n is required for header")
 		headerCmd.Usage()
 		return
 	}
@@ -158,7 +158,7 @@ func handleHeader(cfg *Config, args []string) {
 func handleImport(cfg *Config, args []string) {
 	importCmd := flag.NewFlagSet("import", flag.ExitOnError)
     dbcName := importCmd.String("name", "", "DBC file name")
-	importCmd.StringVar(dbcName, "H", "", "DBC file name (shorthand)")
+	importCmd.StringVar(dbcName, "n", "", "DBC file name (shorthand)")
 	importCmd.Parse(args)
 
 	dbcDB, err := openDB(cfg.DBC)
@@ -184,7 +184,7 @@ func handleImport(cfg *Config, args []string) {
 func handleExport(cfg *Config, args []string) {
 	exportCmd := flag.NewFlagSet("export", flag.ExitOnError)
     dbcName := exportCmd.String("name", "", "DBC file name")
-	exportCmd.StringVar(dbcName, "H", "", "DBC file name (shorthand)")
+	exportCmd.StringVar(dbcName, "n", "", "DBC file name (shorthand)")
 	exportCmd.Parse(args)
 
 	dbcDB, err := openDB(cfg.DBC)

@@ -83,8 +83,8 @@ dbctool <command> [options]
 
     Options:
 
-    -   `--name, -r` : DBC file name without extension (required).
-    -   `--record, -i` : record index to display.
+    -   `--name, -n` : DBC file name without extension (required).
+    -   `--record, -r` : record index to display.
     -   `--out, -o` : rebuild and write the DBC to export directory.
 
 -   **header** --- Show header info of a DBC
@@ -95,7 +95,7 @@ dbctool <command> [options]
 
     Options:
 
-    -   `--name, -r` : DBC file name without extension (required).
+    -   `--name, -n` : DBC file name without extension (required).
 
 -   **import** --- Import all DBCs into the database
 
@@ -105,7 +105,7 @@ dbctool <command> [options]
 
     Options:
 
-    -   `--name, -r` : DBC file name without extension (optional), imports only this DBC.
+    -   `--name, -n` : DBC file name without extension (optional), imports only this DBC.
 
 -   **export** --- Export all tables back into DBC files
 
@@ -115,7 +115,7 @@ dbctool <command> [options]
 
     Options:
 
-    -   `--name, -r` : DBC file name without extension (optional), exports only this DBC.
+    -   `--name, -n` : DBC file name without extension (optional), exports only this DBC.
 
 ### Global options
 
