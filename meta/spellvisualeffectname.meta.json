@@ -1,0 +1,16 @@
+{
+  "file": "SpellVisualEffectName.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "name", "type": "string"},
+    {"name": "file_name", "type": "string"},
+    {"name": "area_effect_size", "type": "float"},
+    {"name": "scale", "type": "float"},
+    {"name": "min_allowed_scale", "type": "float"},
+    {"name": "max_allowed_scale", "type": "float"}
+  ]
+}

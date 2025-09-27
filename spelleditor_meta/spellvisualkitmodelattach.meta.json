@@ -1,0 +1,20 @@
+{
+  "file": "SpellVisualKitModelAttach.dbc",
+  "tableName": "spellvisualkitmodelattach",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "ParentSpellVisualKitId", "type": "uint32"},
+    {"name": "SpellVisualEffectNameId", "type": "uint32"},
+    {"name": "AttachmentId", "type": "uint32"},
+    {"name": "OffsetX", "type": "float"},
+    {"name": "OffsetY", "type": "float"},
+    {"name": "OffsetZ", "type": "float"},
+    {"name": "Yaw", "type": "float"},
+    {"name": "Pitch", "type": "float"},
+    {"name": "Roll", "type": "float"}
+  ]
+}

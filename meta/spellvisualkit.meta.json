@@ -1,0 +1,30 @@
+{
+  "file": "SpellVisualKit.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "start_anim_id", "type": "uint32"},
+    {"name": "anim_id", "type": "uint32"},
+    {"name": "head_effect", "type": "uint32"},
+    {"name": "chest_effect", "type": "uint32"},
+    {"name": "base_effect", "type": "uint32"},
+    {"name": "left_hand_effect", "type": "uint32"},
+    {"name": "right_hand_effect", "type": "uint32"},
+    {"name": "breath_effect", "type": "uint32"},
+    {"name": "left_weapon_effect", "type": "uint32"},
+    {"name": "right_weapon_effect", "type": "uint32"},
+    {"name": "special_effect", "type": "uint32", "count":3},
+    {"name": "world_effect", "type": "uint32"},
+    {"name": "sound_id", "type": "uint32"},
+    {"name": "shake_id", "type": "uint32"},
+    {"name": "char_proc", "type": "uint32", "count":4},
+    {"name": "char_param_0", "type": "float", "count":4},
+    {"name": "char_param_1", "type": "float", "count":4},
+    {"name": "char_param_2", "type": "float", "count":4},
+    {"name": "char_param_3", "type": "float", "count":4},
+    {"name": "flags", "type": "uint32"}
+  ]
+}

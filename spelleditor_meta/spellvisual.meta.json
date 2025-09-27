@@ -1,0 +1,42 @@
+{
+  "file": "SpellVisual.dbc",
+  "tableName": "spellvisual",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "PrecastKit", "type": "uint32"},
+    {"name": "CastKit", "type": "uint32"},
+    {"name": "ImpactKit", "type": "uint32"},
+    {"name": "StateKit", "type": "uint32"},
+    {"name": "StateDoneKit", "type": "uint32"},
+    {"name": "ChannelKit", "type": "uint32"},
+    {"name": "HasMissile", "type": "int32"},
+    {"name": "MissileModel", "type": "uint32"},
+    {"name": "MissilePathType", "type": "uint32"},
+    {"name": "MissileDestinationAttachment", "type": "uint32"},
+    {"name": "MissileSound", "type": "uint32"},
+    {"name": "AnimEventSoundId", "type": "uint32"},
+    {"name": "Flags", "type": "uint32"},
+    {"name": "CasterImpactKit", "type": "uint32"},
+    {"name": "TargetImpactKit", "type": "uint32"},
+    {"name": "MissileAttachment", "type": "uint32"},
+    {"name": "MissileFollowGroundHeight", "type": "uint32"},
+    {"name": "MissileFollowDropSpeed", "type": "uint32"},
+    {"name": "MissileFollowApproach", "type": "uint32"},
+    {"name": "MissileFollowGroundFlags", "type": "uint32"},
+    {"name": "MissileMotion", "type": "uint32"},
+    {"name": "MissileTargetingKit", "type": "uint32"},
+    {"name": "InstantAreaKit", "type": "uint32"},
+    {"name": "ImpactAreaKit", "type": "uint32"},
+    {"name": "PersistentAreaKit", "type": "uint32"},
+    {"name": "MissileCastOffsetX", "type": "float"},
+    {"name": "MissileCastOffsetY", "type": "float"},
+    {"name": "MissileCastOffsetZ", "type": "float"},
+    {"name": "MissileImpactOffsetX", "type": "float"},
+    {"name": "MissileImpactOffsetY", "type": "float"},
+    {"name": "MissileImpactOffsetZ", "type": "float"}
+  ]
+}

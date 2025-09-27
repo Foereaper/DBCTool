@@ -1,0 +1,41 @@
+{
+  "file": "SpellVisual.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "precast_kit", "type": "uint32"},
+    {"name": "cast_kit", "type": "uint32"},
+    {"name": "impact_kit", "type": "uint32"},
+    {"name": "state_kit", "type": "uint32"},
+    {"name": "state_done_kit", "type": "uint32"},
+    {"name": "channel_kit", "type": "uint32"},
+    {"name": "has_missile", "type": "int32"},
+    {"name": "missile_model", "type": "uint32"},
+    {"name": "missile_path_type", "type": "uint32"},
+    {"name": "missile_dest_attachment", "type": "uint32"},
+    {"name": "missile_sound", "type": "uint32"},
+    {"name": "anim_event_sound_id", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "caster_impact_kit", "type": "uint32"},
+    {"name": "target_impact_kid", "type": "uint32"},
+    {"name": "missile_attachment", "type": "uint32"},
+    {"name": "missile_follow_ground_height", "type": "uint32"},
+    {"name": "missile_follow_drop_speed", "type": "uint32"},
+    {"name": "missile_follow_approach", "type": "uint32"},
+    {"name": "missile_follow_ground_flags", "type": "uint32"},
+    {"name": "missile_motion", "type": "uint32"},
+    {"name": "missile_targeting_kit", "type": "uint32"},
+    {"name": "instant_area_kit", "type": "uint32"},
+    {"name": "impact_area_kit", "type": "uint32"},
+    {"name": "persistent_area_kit", "type": "uint32"},
+    {"name": "missile_cast_offset_x", "type": "float"},
+    {"name": "missile_cast_offset_y", "type": "float"},
+    {"name": "missile_cast_offset_z", "type": "float"},
+    {"name": "missile_impact_offset_x", "type": "float"},
+    {"name": "missile_impact_offset_y", "type": "float"},
+    {"name": "missile_impact_offset_z", "type": "float"}
+  ]
+}
