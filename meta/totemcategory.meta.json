@@ -1,0 +1,13 @@
+{
+  "file": "TotemCategory.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "category_type", "type": "uint32"},
+    {"name": "category_mask", "type": "uint32"}
+  ]
+}

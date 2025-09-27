@@ -1,0 +1,14 @@
+{
+  "file": "SpellRadius.dbc",
+  "tableName": "spellradius",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Radius", "type": "float"},
+    {"name": "RadiusPerLevel", "type": "float"},
+    {"name": "MaximumRadius", "type": "float"}
+  ]
+}

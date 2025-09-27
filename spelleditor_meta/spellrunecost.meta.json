@@ -1,0 +1,15 @@
+{
+  "file": "SpellRuneCost.dbc",
+  "tableName": "spellrunecost",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "RuneCost1", "type": "uint32"},
+    {"name": "RuneCost2", "type": "uint32"},
+    {"name": "RuneCost3", "type": "uint32"},
+    {"name": "RunePowerGain", "type": "uint32"}
+  ]
+}

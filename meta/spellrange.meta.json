@@ -1,0 +1,17 @@
+{
+  "file": "SpellRange.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "min_range_hostile", "type": "uint32"},
+    {"name": "min_range_friend", "type": "uint32"},
+    {"name": "max_range_hostile", "type": "uint32"},
+    {"name": "max_range_friend", "type": "uint32"},
+    {"name": "type", "type": "int32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "short_name", "type": "Loc"}
+  ]
+}
