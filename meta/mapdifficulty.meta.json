@@ -1,0 +1,17 @@
+{
+  "file": "MapDifficulty.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "map_id", "direction": "ASC"},
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "map_id", "type": "uint32"},
+    {"name": "difficulty", "type": "uint32"},
+    {"name": "message", "type": "Loc"},
+    {"name": "lockout_duration", "type": "uint32"},
+    {"name": "max_players", "type": "uint32"},
+    {"name": "difficulty_string", "type": "string"}
+  ]
+}
