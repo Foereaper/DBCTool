@@ -39,6 +39,9 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
 	}
     
     tableName := strings.TrimSuffix(meta.File, ".dbc")
+    if meta.TableName != "" {
+        tableName = meta.TableName
+    }
     
     // Ensure checksum table & entry exist
     if err := ensureChecksumTable(db); err != nil {

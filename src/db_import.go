@@ -49,6 +49,10 @@ func ImportDBC(db *sql.DB, cfg *Config, metaPath string) error {
 	}
 
 	tableName := strings.TrimSuffix(filepath.Base(meta.File), ".dbc")
+    if meta.TableName != "" {
+        tableName = meta.TableName
+    }
+    
 	dbcPath := filepath.Join(cfg.Paths.Base, meta.File)
 
 	if _, err := os.Stat(dbcPath); os.IsNotExist(err) {

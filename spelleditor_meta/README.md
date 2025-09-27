@@ -1,0 +1,1 @@
+This directory contains meta files compatible with Stoneharry's Spell Editor. If you would like to use the spell editor in combination with this tool, then please use these meta files instead of the ones found in `./meta`.

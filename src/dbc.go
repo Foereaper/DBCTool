@@ -35,6 +35,7 @@ type FieldMeta struct {
 
 type MetaFile struct {
     File        string      `json:"file"`
+    TableName   string      `json:"tableName,omitempty"`
     PrimaryKeys []string    `json:"primaryKeys"`
     UniqueKeys  [][]string  `json:"uniqueKeys,omitempty"` // array of unique key sets
     SortOrder   []SortField `json:"sortOrder,omitempty"`
