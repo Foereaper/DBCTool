@@ -8,6 +8,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+    "log"
 	"os"
 	"path/filepath"
     "strconv"
@@ -39,7 +40,7 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
     
     tableName := strings.TrimSuffix(meta.File, ".dbc")
     
-    fmt.Printf("Exporting table %s to DBC...\n", tableName)
+    log.Printf("Exporting table %s to DBC...\n", tableName)
     
     orderClause := buildOrderBy(meta.SortOrder)
     
@@ -123,7 +124,7 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
         return fmt.Errorf("failed to write DBC %s: %w", outPath, err)
     }
 
-    fmt.Printf("Exported %s\n", meta.File)
+    log.Printf("Exported %s\n", meta.File)
     return nil
 }
 

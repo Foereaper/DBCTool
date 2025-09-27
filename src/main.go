@@ -178,7 +178,7 @@ func handleImport(cfg *Config, args []string) {
         }
     }
 
-	fmt.Println("Import completed successfully!")
+	log.Println("Import completed successfully!")
 }
 
 func handleExport(cfg *Config, args []string) {
@@ -204,7 +204,7 @@ func handleExport(cfg *Config, args []string) {
         }
     }
 
-	fmt.Println("Export completed successfully!")
+	log.Println("Export completed successfully!")
 }
 
 func printUsage() {

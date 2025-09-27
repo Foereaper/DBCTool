@@ -159,7 +159,7 @@ func createTable(db *sql.DB, tableName string, meta *MetaFile) error {
             case "uint32":
                 columns = append(columns, fmt.Sprintf("`%s` BIGINT UNSIGNED", colName))
             case "float":
-                columns = append(columns, fmt.Sprintf("`%s` DECIMAL(22,16)", colName))
+                columns = append(columns, fmt.Sprintf("`%s` DECIMAL(38,16)", colName))
             case "string":
                 columns = append(columns, fmt.Sprintf("`%s` TEXT", colName))
             case "Loc":
@@ -214,19 +214,18 @@ func createTable(db *sql.DB, tableName string, meta *MetaFile) error {
 
 // insertRecords inserts all DBC records into SQL
 func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) error {
-	total := len(dbc.Records)
-	if total == 0 {
-		return nil
-	}
+    total := len(dbc.Records)
+    if total == 0 {
+        return nil
+    }
 
-	// Transaction is optional, but speeds things up if you’re inserting many rows
-	tx, err := db.Begin()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback() // safe rollback if Commit not reached
+    tx, err := db.Begin()
+    if err != nil {
+        return err
+    }
+    defer tx.Rollback() // safe rollback if Commit not reached
 
-	columnsBase := make([]string, 0, len(meta.Fields)*len(locLangs))
+    columnsBase := make([]string, 0, len(meta.Fields)*len(locLangs))
     for _, field := range meta.Fields {
         repeat := int(field.Count)
         if repeat == 0 {
@@ -248,36 +247,37 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
             }
         }
     }
-    
+
     // calculate batch size
     colsPerRow := len(columnsBase)
-    maxPlaceholders := 60000 // stay below 65535 max batch size
+    // stay below 65535 max batch size
+    maxPlaceholders := 60000
     batchSize := maxPlaceholders / colsPerRow
-
     if batchSize > 2000 {
         batchSize = 2000
     }
 
-	// process in batches
-	for start := 0; start < total; start += batchSize {
-		end := start + batchSize
-		if end > total {
-			end = total
-		}
-		records := dbc.Records[start:end]
+    // progress tracking
+    nextPercent := 15
 
-		var allPlaceholders []string
-		var allValues []interface{}
+    // process in batches
+    for start := 0; start < total; start += batchSize {
+        end := start + batchSize
+        if end > total {
+            end = total
+        }
+        records := dbc.Records[start:end]
+
+        var allPlaceholders []string
+        var allValues []interface{}
 
         for _, rec := range records {
             var rowPlaceholders []string
-
             for _, field := range meta.Fields {
                 repeat := int(field.Count)
                 if repeat == 0 {
                     repeat = 1
                 }
-
                 for j := 0; j < repeat; j++ {
                     name := field.Name
                     if field.Count > 1 {
@@ -307,30 +307,36 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
                     }
                 }
             }
-
             allPlaceholders = append(allPlaceholders, "("+strings.Join(rowPlaceholders, ", ")+")")
         }
 
-		query := fmt.Sprintf(
-			"INSERT INTO `%s` (%s) VALUES %s ON DUPLICATE KEY UPDATE %s",
-			tableName,
-			strings.Join(columnsBase, ", "),
-			strings.Join(allPlaceholders, ", "),
-			generateUpdateAssignments(columnsBase),
-		)
+        query := fmt.Sprintf(
+            "INSERT INTO `%s` (%s) VALUES %s ON DUPLICATE KEY UPDATE %s",
+            tableName,
+            strings.Join(columnsBase, ", "),
+            strings.Join(allPlaceholders, ", "),
+            generateUpdateAssignments(columnsBase),
+        )
 
-		if _, err := tx.Exec(query, allValues...); err != nil {
-			return fmt.Errorf("batch insert failed (%d–%d): %v", start, end, err)
-		}
+        if _, err := tx.Exec(query, allValues...); err != nil {
+            return fmt.Errorf("batch insert failed (%d–%d): %v", start, end, err)
+        }
 
-		fmt.Printf("Inserted batch %d–%d of %d\n", start+1, end, total)
-	}
+        // progress check
+        done := end * 100 / total
+        if done >= nextPercent {
+            log.Printf("%d%% complete.. (%d/%d rows)\n", done, end, total)
+            nextPercent += 15
+        }
+    }
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
+    if err := tx.Commit(); err != nil {
+        return err
+    }
 
-	return nil
+    log.Println("100% complete!")
+
+    return nil
 }
 
 // generateUpdateAssignments generates the ON DUPLICATE KEY UPDATE clause
