@@ -39,6 +39,10 @@ func ImportDBCs(db *sql.DB, cfg *Config) error {
 
 // ImportDBC imports a single DBC into SQL based on its meta
 func ImportDBC(db *sql.DB, cfg *Config, metaPath string) error {
+    if err := ensureChecksumTable(db); err != nil {
+        return fmt.Errorf("failed to ensure dbc_checksum table: %w", err)
+    }
+    
 	meta, err := LoadMeta(metaPath)
 	if err != nil {
 		return fmt.Errorf("failed to load meta %s: %w", metaPath, err)
@@ -51,7 +55,11 @@ func ImportDBC(db *sql.DB, cfg *Config, metaPath string) error {
 		log.Printf("Skipping %s: DBC file does not exist", tableName)
 		return nil
 	}
-
+    
+    if err := ensureChecksumEntry(db, tableName); err != nil {
+        return fmt.Errorf("failed to ensure checksum entry for %s: %w", tableName, err)
+    }
+    
 	if tableExists(db, tableName) {
 		log.Printf("Skipping %s: table already exists", tableName)
 		return nil
@@ -346,4 +354,26 @@ func generateUpdateAssignments(columns []string) string {
 		assignments[i] = fmt.Sprintf("%s=VALUES(%s)", col, col)
 	}
 	return strings.Join(assignments, ", ")
+}
+
+// ensureChecksumTable ensures the dbc_checksum table exists
+func ensureChecksumTable(db *sql.DB) error {
+	query := `
+	CREATE TABLE IF NOT EXISTS dbc_checksum (
+		table_name VARCHAR(255) NOT NULL PRIMARY KEY,
+		checksum BIGINT UNSIGNED NOT NULL DEFAULT 0
+	)`
+	_, err := db.Exec(query)
+	return err
+}
+
+// ensureChecksumEntry makes sure a row for the table exists in dbc_checksum
+func ensureChecksumEntry(db *sql.DB, tableName string) error {
+	var exists int
+	err := db.QueryRow("SELECT 1 FROM dbc_checksum WHERE table_name = ?", tableName).Scan(&exists)
+	if err == sql.ErrNoRows {
+		_, insErr := db.Exec("INSERT INTO dbc_checksum (table_name, checksum) VALUES (?, 0)", tableName)
+		return insErr
+	}
+	return err
 }

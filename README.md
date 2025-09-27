@@ -54,6 +54,9 @@ When run for the first time, `DBCTool` will generate a template
     "export": "../dbc_export",
     "meta": "../meta"
   }
+  "options": {
+    "use_versioning": false
+  }
 }
 ```
 
@@ -62,6 +65,9 @@ When run for the first time, `DBCTool` will generate a template
 -   **paths.export**: output folder for rebuilt/exported DBCs.
 -   **paths.meta**: directory with `*.meta.json` files describing each
     DBC's schema.
+-   **options.use_versioning**: determines whether or not export uses
+    the built in versioning checksum. If enabled, only tables determined to
+    have data changes will be exported. Otherwise all DBCs will be exported.
 
 ------------------------------------------------------------------------
 

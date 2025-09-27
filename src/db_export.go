@@ -40,6 +40,31 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
     
     tableName := strings.TrimSuffix(meta.File, ".dbc")
     
+    // Ensure checksum table & entry exist
+    if err := ensureChecksumTable(db); err != nil {
+        return fmt.Errorf("failed to ensure dbc_checksum table: %w", err)
+    }
+    
+    if err := ensureChecksumEntry(db, tableName); err != nil {
+        return fmt.Errorf("failed to ensure checksum entry for %s: %w", tableName, err)
+    }
+
+    // Compare checksums
+    currentCS, err := getTableChecksum(db, tableName)
+    if err != nil {
+        return fmt.Errorf("failed to calculate checksum for %s: %w", tableName, err)
+    }
+
+    storedCS, err := getStoredChecksum(db, tableName)
+    if err != nil {
+        return fmt.Errorf("failed to get stored checksum for %s: %w", tableName, err)
+    }
+
+    if (currentCS == storedCS) && cfg.Options.UseVersioning {
+        log.Printf("Skipping %s: no changes detected", tableName)
+        return nil
+    }
+    
     log.Printf("Exporting table %s to DBC...\n", tableName)
     
     orderClause := buildOrderBy(meta.SortOrder)
@@ -122,6 +147,10 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
 
     if err := WriteDBC(&dbc, &meta, outPath); err != nil {
         return fmt.Errorf("failed to write DBC %s: %w", outPath, err)
+    }
+    
+    if err := updateChecksum(db, tableName, currentCS); err != nil {
+        return fmt.Errorf("failed to update checksum for %s: %w", tableName, err)
     }
 
     log.Printf("Exported %s\n", meta.File)
@@ -254,4 +283,40 @@ func toString(raw []interface{}, cols []string, name string) string {
 		}
 	}
 	return ""
+}
+
+// getTableChecksum returns the CHECKSUM TABLE value
+func getTableChecksum(db *sql.DB, tableName string) (uint64, error) {
+	var tbl string
+	var checksum sql.NullInt64
+	err := db.QueryRow("CHECKSUM TABLE `" + tableName + "`").Scan(&tbl, &checksum)
+	if err != nil {
+		return 0, err
+	}
+	if !checksum.Valid {
+		return 0, nil
+	}
+	return uint64(checksum.Int64), nil
+}
+
+// getStoredChecksum retrieves the stored checksum from dbc_checksum
+func getStoredChecksum(db *sql.DB, tableName string) (uint64, error) {
+	var cs sql.NullInt64
+	err := db.QueryRow("SELECT checksum FROM dbc_checksum WHERE table_name = ?", tableName).Scan(&cs)
+	if err == sql.ErrNoRows {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+	if !cs.Valid {
+		return 0, nil
+	}
+	return uint64(cs.Int64), nil
+}
+
+// updateChecksum updates the stored checksum for a table
+func updateChecksum(db *sql.DB, tableName string, checksum uint64) error {
+	_, err := db.Exec("UPDATE dbc_checksum SET checksum = ? WHERE table_name = ?", checksum, tableName)
+	return err
 }

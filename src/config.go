@@ -27,10 +27,16 @@ type PathConfig struct {
 	Meta   string `json:"meta"`   // path to meta files
 }
 
+// OptionConfig holds generic import/export options
+type OptionConfig struct {
+	UseVersioning bool `json:"use_versioning"`   // whether or not to use DBC export versioning
+}
+
 // Config is the root config.json structure
 type Config struct {
-	DBC   DBConfig   `json:"dbc"`
-	Paths PathConfig `json:"paths"`
+	DBC     DBConfig     `json:"dbc"`
+	Paths   PathConfig   `json:"paths"`
+    Options OptionConfig `json:"options"`
 }
 
 // loadOrInitConfig loads config.json, or generates a template if missing
@@ -44,6 +50,9 @@ func loadOrInitConfig(path string) (*Config, bool, error) {
 				Export: "./dbc_export",
 				Meta:   "./meta",
 			},
+            Options: OptionConfig{
+                UseVersioning: false,
+            },
 		}
 
 		data, err := json.MarshalIndent(template, "", "  ")
