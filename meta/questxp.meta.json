@@ -1,0 +1,11 @@
+{
+  "file": "QuestXP.dbc",
+  "primaryKeys": ["quest_level"],
+  "sortOrder": [
+    {"name": "quest_level", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "quest_level", "type": "uint32"},
+    {"name": "difficulty", "type": "uint32", "count":10}
+  ]
+}
