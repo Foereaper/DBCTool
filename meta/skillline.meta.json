@@ -1,0 +1,17 @@
+{
+  "file": "SkillLine.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "category", "type": "uint32"},
+    {"name": "cost", "type": "uint32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "desc", "type": "Loc"},
+    {"name": "icon_id", "type": "uint32"},
+    {"name": "verb", "type": "Loc"},
+    {"name": "can_link", "type": "uint32"}
+  ]
+}
