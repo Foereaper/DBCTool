@@ -121,7 +121,8 @@ dbctool <command> [options]
 
     Options:
 
-    -   `--name, -n` : DBC file name without extension (optional), exports only this DBC.
+    -   `--name, -n`  : DBC file name without extension (optional), exports only this DBC.
+    -   `--force, -f` : Force export even if versioning is enabled (overrides the use_versioning option).
 
 ### Global options
 

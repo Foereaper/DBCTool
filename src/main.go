@@ -185,7 +185,13 @@ func handleExport(cfg *Config, args []string) {
 	exportCmd := flag.NewFlagSet("export", flag.ExitOnError)
     dbcName := exportCmd.String("name", "", "DBC file name")
 	exportCmd.StringVar(dbcName, "n", "", "DBC file name (shorthand)")
+    force := exportCmd.Bool("force", false, "Force export even if versioning is enabled")
+	exportCmd.BoolVar(force, "f", false, "Force export (shorthand)")
 	exportCmd.Parse(args)
+
+    if *force {
+		cfg.Options.UseVersioning = false
+	}
 
 	dbcDB, err := openDB(cfg.DBC)
 	if err != nil {
