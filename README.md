@@ -75,7 +75,7 @@ When run for the first time, `DBCTool` will generate a template
 
 General syntax:
 
-``` bash
+```bash
 dbctool <command> [options]
 ```
 
@@ -83,7 +83,7 @@ dbctool <command> [options]
 
 -   **read** --- Read a DBC file and optionally rebuild it
 
-    ``` bash
+    ```bash
     dbctool read --name=Spell --record=5 --out
     ```
 
@@ -95,7 +95,7 @@ dbctool <command> [options]
 
 -   **header** --- Show header info of a DBC
 
-    ``` bash
+    ```bash
     dbctool header --name=Spell
     ```
 
@@ -105,7 +105,7 @@ dbctool <command> [options]
 
 -   **import** --- Import all DBCs into the database
 
-    ``` bash
+    ```bash
     dbctool import
     ```
 
@@ -115,7 +115,7 @@ dbctool <command> [options]
 
 -   **export** --- Export all tables back into DBC files
 
-    ``` bash
+    ```bash
     dbctool export
     ```
 
@@ -123,6 +123,16 @@ dbctool <command> [options]
 
     -   `--name, -n`  : DBC file name without extension (optional), exports only this DBC.
     -   `--force, -f` : Force export even if versioning is enabled (overrides the use_versioning option).
+
+-   **verify** --- Compare exported DBC files against originals
+
+    ```bash
+    dbctool verify
+    ```
+
+    Options:
+
+    -   `--name, -n` : DBC file name without extension (optional), verifies only this DBC.
 
 ### Global options
 
