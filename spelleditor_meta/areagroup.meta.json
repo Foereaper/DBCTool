@@ -1,0 +1,18 @@
+{
+  "file": "AreaGroup.dbc",
+  "tableName": "areagroup",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "AreaId1", "type": "uint32"},
+    {"name": "AreaId2", "type": "uint32"},
+    {"name": "AreaId3", "type": "uint32"},
+    {"name": "AreaId4", "type": "uint32"},
+    {"name": "AreaId5", "type": "uint32"},
+    {"name": "AreaId6", "type": "uint32"},
+    {"name": "NextGroup", "type": "uint32"}
+  ]
+}

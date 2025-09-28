@@ -1,0 +1,17 @@
+{
+  "file": "AnimationData.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "name", "type": "string"},
+    {"name": "wep_flags", "type": "uint32"},
+    {"name": "body_flags", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "fallback_anim_id", "type": "uint32"},
+    {"name": "behavior_id", "type": "uint32"},
+    {"name": "behavior_tier", "type": "uint32"}
+  ]
+}

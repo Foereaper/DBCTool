@@ -1,0 +1,26 @@
+{
+  "file": "AreaTable.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "map_id", "type": "uint32"},
+    {"name": "zone_id", "type": "uint32"},
+    {"name": "area_bit", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "sound_provider_pref", "type": "uint32"},
+    {"name": "sound_provider_pref_underwater", "type": "uint32"},
+    {"name": "ambience", "type": "uint32"},
+    {"name": "zone_music", "type": "uint32"},
+    {"name": "zone_music_intro", "type": "uint32"},
+    {"name": "exploration_level", "type": "uint32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "faction_group", "type": "uint32"},
+    {"name": "liquid_type", "type": "uint32", "count":4},
+    {"name": "min_elevation", "type": "float"},
+    {"name": "light_ambient_multiplier", "type": "float"},
+    {"name": "light_id", "type": "uint32"}
+  ]
+}

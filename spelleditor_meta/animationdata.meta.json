@@ -1,0 +1,18 @@
+{
+  "file": "AnimationData.dbc",
+  "tableName": "animationdata",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Name", "type": "string"},
+    {"name": "WeaponFlags", "type": "uint32"},
+    {"name": "BodyFlags", "type": "uint32"},
+    {"name": "Flags", "type": "uint32"},
+    {"name": "FallbackAnimationID", "type": "uint32"},
+    {"name": "BehaviourID", "type": "uint32"},
+    {"name": "BehaviourTier", "type": "uint32"}
+  ]
+}
