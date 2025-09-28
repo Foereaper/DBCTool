@@ -6,8 +6,8 @@
   ],
   "fields": [
     {"name": "id", "type": "uint32"},
-    {"name": "time", "type": "uint32"},
-    {"name": "time_per_level", "type": "uint32"},
-    {"name": "min_time", "type": "uint32"}
+    {"name": "time", "type": "int32"},
+    {"name": "time_per_level", "type": "int32"},
+    {"name": "min_time", "type": "int32"}
   ]
 }

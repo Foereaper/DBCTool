@@ -1,0 +1,14 @@
+{
+  "file": "SpellMissileMotion.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "name", "type": "string"},
+    {"name": "script", "type": "string"},
+    {"name": "flags", "type": "int32"},
+    {"name": "missile_count", "type": "int32"}
+  ]
+}

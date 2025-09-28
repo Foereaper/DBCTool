@@ -1,0 +1,13 @@
+{
+  "file": "ItemClass.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "subclass_id", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "name", "type": "Loc"}
+  ]
+}

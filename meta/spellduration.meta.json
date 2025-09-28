@@ -7,7 +7,7 @@
   "fields": [
     {"name": "id", "type": "uint32"},
     {"name": "base_duration", "type": "uint32"},
-    {"name": "per_level", "type": "uint32"},
-    {"name": "max_duration", "type": "uint32"}
+    {"name": "per_level", "type": "int32"},
+    {"name": "max_duration", "type": "int32"}
   ]
 }

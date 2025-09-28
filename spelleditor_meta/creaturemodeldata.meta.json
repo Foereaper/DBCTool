@@ -1,0 +1,38 @@
+{
+  "file": "CreatureModelData.dbc",
+  "tableName": "creaturemodeldata",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "modelPath", "type": "string"},
+    {"name": "sizeClass", "type": "uint32"},
+    {"name": "modelScale", "type": "float"},
+    {"name": "bloodId", "type": "uint32"},
+    {"name": "footprintTextureId", "type": "uint32"},
+    {"name": "footprintTextureLength", "type": "float"},
+    {"name": "footprintTextureWidth", "type": "float"},
+    {"name": "footprintParticleScale", "type": "float"},
+    {"name": "foleyMaterialId", "type": "uint32"},
+    {"name": "footstepShakeSize", "type": "uint32"},
+    {"name": "deathThudShakeSize", "type": "uint32"},
+    {"name": "soundData", "type": "uint32"},
+    {"name": "collisionWidth", "type": "float"},
+    {"name": "collisionHeight", "type": "float"},
+    {"name": "mountHeight", "type": "float"},
+    {"name": "geoBoxMinX", "type": "float"},
+    {"name": "geoBoxMinY", "type": "float"},
+    {"name": "geoBoxMinZ", "type": "float"},
+    {"name": "geoBoxMaxX", "type": "float"},
+    {"name": "geoBoxMaxY", "type": "float"},
+    {"name": "geoBoxMaxZ", "type": "float"},
+    {"name": "worldEffectScale", "type": "float"},
+    {"name": "attachedEffectScale", "type": "float"},
+    {"name": "MissileCollisionRadius", "type": "float"},
+    {"name": "MissileCollisionPush", "type": "float"},
+    {"name": "MissileCollisionRaise", "type": "float"}
+  ]
+}

@@ -8,7 +8,7 @@
   "fields": [
     {"name": "ID", "type": "uint32"},
     {"name": "BaseDuration", "type": "uint32"},
-    {"name": "PerLevel", "type": "uint32"},
-    {"name": "MaximumDuration", "type": "uint32"}
+    {"name": "PerLevel", "type": "int32"},
+    {"name": "MaximumDuration", "type": "int32"}
   ]
 }

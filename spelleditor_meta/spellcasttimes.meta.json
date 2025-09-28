@@ -7,8 +7,8 @@
   ],
   "fields": [
     {"name": "ID", "type": "uint32"},
-    {"name": "CastingTime", "type": "uint32"},
-    {"name": "CastingTimePerLevel", "type": "uint32"},
-    {"name": "MinimumCastingTime", "type": "uint32"}
+    {"name": "CastingTime", "type": "int32"},
+    {"name": "CastingTimePerLevel", "type": "int32"},
+    {"name": "MinimumCastingTime", "type": "int32"}
   ]
 }

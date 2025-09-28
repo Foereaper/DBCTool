@@ -170,7 +170,7 @@ func createTable(db *sql.DB, tableName string, meta *MetaFile) error {
 			case "int32":
 				columns = append(columns, fmt.Sprintf("`%s` INT", colName))
 			case "uint32":
-				columns = append(columns, fmt.Sprintf("`%s` BIGINT UNSIGNED", colName))
+				columns = append(columns, fmt.Sprintf("`%s` INT UNSIGNED", colName))
 			case "float":
 				columns = append(columns, fmt.Sprintf("`%s` DECIMAL(38,16)", colName))
 			case "string":

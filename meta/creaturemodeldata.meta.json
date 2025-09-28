@@ -1,0 +1,37 @@
+{
+  "file": "CreatureModelData.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "model_path", "type": "string"},
+    {"name": "size_class", "type": "uint32"},
+    {"name": "model_scale", "type": "float"},
+    {"name": "blood_id", "type": "uint32"},
+    {"name": "footprint_texture_id", "type": "uint32"},
+    {"name": "footprint_texture_length", "type": "float"},
+    {"name": "footprint_texture_width", "type": "float"},
+    {"name": "footprint_particle_scale", "type": "float"},
+    {"name": "foley_material_id", "type": "uint32"},
+    {"name": "footstep_shake_size", "type": "uint32"},
+    {"name": "death_thud_shake_size", "type": "uint32"},
+    {"name": "sound_data", "type": "uint32"},
+    {"name": "collision_width", "type": "float"},
+    {"name": "collision_height", "type": "float"},
+    {"name": "mount_height", "type": "float"},
+    {"name": "geo_box_min_x", "type": "float"},
+    {"name": "geo_box_min_y", "type": "float"},
+    {"name": "geo_box_min_z", "type": "float"},
+    {"name": "geo_box_max_x", "type": "float"},
+    {"name": "geo_box_max_y", "type": "float"},
+    {"name": "geo_box_max_z", "type": "float"},
+    {"name": "world_effect_scale", "type": "float"},
+    {"name": "attached_effect_scale", "type": "float"},
+    {"name": "missile_collision_radius", "type": "float"},
+    {"name": "missile_collision_push", "type": "float"},
+    {"name": "missile_collision_raise", "type": "float"}
+  ]
+}

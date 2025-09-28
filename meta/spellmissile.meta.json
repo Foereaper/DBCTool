@@ -1,0 +1,24 @@
+{
+  "file": "SpellMissile.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "default_pitch_min", "type": "float"},
+    {"name": "default_pitch_max", "type": "float"},
+    {"name": "default_speed_min", "type": "float"},
+    {"name": "default_speed_max", "type": "float"},
+    {"name": "randomize_facing_min", "type": "float"},
+    {"name": "randomize_facing_max", "type": "float"},
+    {"name": "randomize_pitch_min", "type": "float"},
+    {"name": "randomize_pitch_max", "type": "float"},
+    {"name": "randomize_speed_min", "type": "float"},
+    {"name": "randomize_speed_max", "type": "float"},
+    {"name": "gravity", "type": "float"},
+    {"name": "max_duration", "type": "float"},
+    {"name": "collision_radius", "type": "float"}
+  ]
+}

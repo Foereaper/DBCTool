@@ -1,0 +1,23 @@
+{
+  "file": "CreatureDisplayInfo.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "model_id", "type": "uint32"},
+    {"name": "sound_id", "type": "uint32"},
+    {"name": "extended_display_info_id", "type": "uint32"},
+    {"name": "creature_model_scale", "type": "float"},
+    {"name": "creature_model_alpha", "type": "uint32"},
+    {"name": "texture_variation", "type": "string", "count":3},
+    {"name": "portrait_texture_name", "type": "string"},
+    {"name": "blood_level", "type": "int32"},
+    {"name": "blood_id", "type": "uint32"},
+    {"name": "npc_sound_id", "type": "uint32"},
+    {"name": "praticle_color_id", "type": "uint32"},
+    {"name": "creature_geoset_data", "type": "uint32"},
+    {"name": "obj_effect_package_id", "type": "uint32"}
+  ]
+}

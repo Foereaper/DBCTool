@@ -76,7 +76,7 @@ func main() {
 		return
 	}
 
-	switch cmd {
+    switch cmd {
         case "read":
             handleRead(cfg, subArgs)
         case "header":
@@ -85,10 +85,12 @@ func main() {
             handleImport(cfg, subArgs)
         case "export":
             handleExport(cfg, subArgs)
+        case "verify", "check":
+            handleVerify(cfg, subArgs)
         default:
             fmt.Printf("Unknown command: %s\n\n", cmd)
             printUsage()
-	}
+    }
 }
 
 func handleRead(cfg *Config, args []string) {
@@ -213,6 +215,60 @@ func handleExport(cfg *Config, args []string) {
 	log.Println("Export completed successfully!")
 }
 
+func handleVerify(cfg *Config, args []string) {
+	verifyCmd := flag.NewFlagSet("verify", flag.ExitOnError)
+	dbcName := verifyCmd.String("name", "", "DBC file name")
+	verifyCmd.StringVar(dbcName, "n", "", "DBC file name (shorthand)")
+	verifyCmd.Parse(args)
+
+	// scan all metas or just one
+	metas := []string{}
+	if *dbcName == "" {
+		all, err := filepath.Glob(filepath.Join(cfg.Paths.Meta, "*.meta.json"))
+		if err != nil {
+			log.Fatalf("Failed to scan meta directory: %v", err)
+		}
+		metas = all
+	} else {
+		metas = []string{filepath.Join(cfg.Paths.Meta, *dbcName+".meta.json")}
+	}
+
+	okCount := 0
+	failCount := 0
+
+	for _, metaPath := range metas {
+		meta, err := LoadMeta(metaPath)
+		if err != nil {
+			log.Printf("Failed to load meta %s: %v", metaPath, err)
+			failCount++
+			continue
+		}
+
+		srcPath := filepath.Join(cfg.Paths.Base, meta.File)
+		outPath := filepath.Join(cfg.Paths.Export, meta.File)
+
+		same, err := compareFiles(srcPath, outPath)
+		if err != nil {
+			log.Printf("Error comparing %s: %v", meta.File, err)
+			failCount++
+			continue
+		}
+
+		if same {
+			log.Printf("✓ Verified %s (identical)", meta.File)
+			okCount++
+		} else {
+			log.Printf("✗ Mismatch in %s", meta.File)
+			failCount++
+		}
+	}
+
+	log.Printf("Verification complete: %d ok, %d failed", okCount, failCount)
+	if failCount > 0 {
+		os.Exit(1)
+	}
+}
+
 func printUsage() {
 	fmt.Println("Usage: dbcreader <command> [options]")
 	fmt.Println("Commands:")
@@ -220,5 +276,6 @@ func printUsage() {
 	fmt.Println("  header  - Print header info of a DBC file")
 	fmt.Println("  import  - Import DBC files into the database")
 	fmt.Println("  export  - Export database tables back to DBC files")
+	fmt.Println("  verify  - Compare original and exported DBC files for 1:1 match")
 	fmt.Println("\nUse 'dbcreader <command> -h' for command-specific options")
 }

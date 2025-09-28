@@ -11,7 +11,7 @@
     {"name": "MinimumRangeFriend", "type": "float"},
     {"name": "MaximumRangeHostile", "type": "float"},
     {"name": "MaximumRangeFriend", "type": "float"},
-    {"name": "Type", "type": "uint32"},
+    {"name": "Type", "type": "int32"},
     {"name": "Name1", "type": "string"},
     {"name": "Name2", "type": "string"},
     {"name": "Name3", "type": "string"},

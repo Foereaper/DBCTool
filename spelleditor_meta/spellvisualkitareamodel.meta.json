@@ -1,0 +1,13 @@
+{
+  "file": "SpellVisualKitAreaModel.dbc",
+  "tableName": "spellvisualkitareamodel",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Name", "type": "string"},
+    {"name": "enumID", "type": "uint32"}
+  ]
+}

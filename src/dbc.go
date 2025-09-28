@@ -6,9 +6,11 @@
 package main
 
 import (
+    "crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+    "io"
 	"math"
 	"os"
     "path/filepath"
@@ -347,4 +349,30 @@ func PrintRecord(rec Record, meta *MetaFile, stringBlock []byte) {
             }
         }
     }
+}
+
+func compareFiles(path1, path2 string) (bool, error) {
+	f1, err := os.Open(path1)
+	if err != nil {
+		return false, err
+	}
+	defer f1.Close()
+
+	f2, err := os.Open(path2)
+	if err != nil {
+		return false, err
+	}
+	defer f2.Close()
+
+	h1 := sha256.New()
+	h2 := sha256.New()
+
+	if _, err := io.Copy(h1, f1); err != nil {
+		return false, err
+	}
+	if _, err := io.Copy(h2, f2); err != nil {
+		return false, err
+	}
+
+	return string(h1.Sum(nil)) == string(h2.Sum(nil)), nil
 }
