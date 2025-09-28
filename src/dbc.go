@@ -7,31 +7,31 @@ package main
 
 import (
     "crypto/sha256"
-	"encoding/binary"
-	"encoding/json"
-	"fmt"
+    "encoding/binary"
+    "encoding/json"
+    "fmt"
     "io"
-	"math"
-	"os"
+    "math"
+    "os"
     "path/filepath"
 )
 
 type DBCHeader struct {
-	Magic           [4]byte
-	RecordCount     uint32
-	FieldCount      uint32
-	RecordSize      uint32
-	StringBlockSize uint32
+    Magic           [4]byte
+    RecordCount     uint32
+    FieldCount      uint32
+    RecordSize      uint32
+    StringBlockSize uint32
 }
 
 type SortField struct {
-	Name      string `json:"name"`
-	Direction string `json:"direction"` // "ASC" or "DESC"
+    Name      string `json:"name"`
+    Direction string `json:"direction"` // "ASC" or "DESC"
 }
 
 type FieldMeta struct {
-	Name  string `json:"name"`
-	Type  string `json:"type"` // int32, uint32, float, string, Loc
+    Name  string `json:"name"`
+    Type  string `json:"type"` // int32, uint32, float, string, Loc
     Count uint32 `json:"count,omitempty"`
 }
 
@@ -47,9 +47,9 @@ type MetaFile struct {
 type Record map[string]interface{}
 
 type DBCFile struct {
-	Header      DBCHeader
-	Records     []Record
-	StringBlock []byte
+    Header      DBCHeader
+    Records     []Record
+    StringBlock []byte
 }
 
 // LoadMeta reads and parses the meta JSON
@@ -177,41 +177,41 @@ func ParseRecords(data []byte, start int, header DBCHeader, meta MetaFile, strin
 }
 
 func ReadDBCHeader(dbcName string, cfg *Config) (DBCHeader, error) {
-	dbcPath := filepath.Join(cfg.Paths.Base, dbcName+".dbc")
+    dbcPath := filepath.Join(cfg.Paths.Base, dbcName+".dbc")
 
-	// Check existence
-	if _, err := os.Stat(dbcPath); os.IsNotExist(err) {
-		return DBCHeader{}, fmt.Errorf("DBC file not found: %s", dbcPath)
-	}
+    // Check existence
+    if _, err := os.Stat(dbcPath); os.IsNotExist(err) {
+        return DBCHeader{}, fmt.Errorf("DBC file not found: %s", dbcPath)
+    }
 
-	data, err := os.ReadFile(dbcPath)
-	if err != nil {
-		return DBCHeader{}, fmt.Errorf("failed to read DBC file: %w", err)
-	}
-	if len(data) < 20 {
-		return DBCHeader{}, fmt.Errorf("file too small to contain a valid DBC header")
-	}
+    data, err := os.ReadFile(dbcPath)
+    if err != nil {
+        return DBCHeader{}, fmt.Errorf("failed to read DBC file: %w", err)
+    }
+    if len(data) < 20 {
+        return DBCHeader{}, fmt.Errorf("file too small to contain a valid DBC header")
+    }
 
-	header, err := ParseHeader(data[:20])
+    header, err := ParseHeader(data[:20])
     if err != nil {
         return DBCHeader{}, err
     }
     
-	return header, nil
+    return header, nil
 }
 
 func ReadDBCFile(dbcName string, cfg *Config) (*DBCFile, *MetaFile, error) {
-	dbcPath := filepath.Join(cfg.Paths.Base, dbcName+".dbc")
-	metaPath := filepath.Join(cfg.Paths.Meta, dbcName+".meta.json")
+    dbcPath := filepath.Join(cfg.Paths.Base, dbcName+".dbc")
+    metaPath := filepath.Join(cfg.Paths.Meta, dbcName+".meta.json")
 
-	if _, err := os.Stat(dbcPath); os.IsNotExist(err) {
-		return nil, nil, fmt.Errorf("DBC file not found: %s", dbcPath)
-	}
-	if _, err := os.Stat(metaPath); os.IsNotExist(err) {
-		return nil, nil, fmt.Errorf("Meta file not found: %s", metaPath)
-	}
+    if _, err := os.Stat(dbcPath); os.IsNotExist(err) {
+        return nil, nil, fmt.Errorf("DBC file not found: %s", dbcPath)
+    }
+    if _, err := os.Stat(metaPath); os.IsNotExist(err) {
+        return nil, nil, fmt.Errorf("Meta file not found: %s", metaPath)
+    }
 
-	meta, err := LoadMeta(metaPath)
+    meta, err := LoadMeta(metaPath)
     if err != nil {
         return nil, nil, fmt.Errorf("failed to load meta: %w", err)
     }
@@ -221,93 +221,93 @@ func ReadDBCFile(dbcName string, cfg *Config) (*DBCFile, *MetaFile, error) {
         return nil, nil, fmt.Errorf("failed to load dbc: %w", err)
     }
 
-	return &dbc, &meta, nil
+    return &dbc, &meta, nil
 }
 
 // WriteDBC writes a DBC file from memory
 func WriteDBC(dbc *DBCFile, meta *MetaFile, outPath string) error {
-	outFile, err := os.Create(outPath)
-	if err != nil {
-		return err
-	}
-	defer outFile.Close()
+    outFile, err := os.Create(outPath)
+    if err != nil {
+        return err
+    }
+    defer outFile.Close()
 
-	// Write header
-	headerBuf := make([]byte, 20)
-	copy(headerBuf[0:4], dbc.Header.Magic[:])
-	binary.LittleEndian.PutUint32(headerBuf[4:8], dbc.Header.RecordCount)
-	binary.LittleEndian.PutUint32(headerBuf[8:12], dbc.Header.FieldCount)
-	binary.LittleEndian.PutUint32(headerBuf[12:16], dbc.Header.RecordSize)
-	binary.LittleEndian.PutUint32(headerBuf[16:20], dbc.Header.StringBlockSize)
-	if _, err := outFile.Write(headerBuf); err != nil {
-		return err
-	}
+    // Write header
+    headerBuf := make([]byte, 20)
+    copy(headerBuf[0:4], dbc.Header.Magic[:])
+    binary.LittleEndian.PutUint32(headerBuf[4:8], dbc.Header.RecordCount)
+    binary.LittleEndian.PutUint32(headerBuf[8:12], dbc.Header.FieldCount)
+    binary.LittleEndian.PutUint32(headerBuf[12:16], dbc.Header.RecordSize)
+    binary.LittleEndian.PutUint32(headerBuf[16:20], dbc.Header.StringBlockSize)
+    if _, err := outFile.Write(headerBuf); err != nil {
+        return err
+    }
 
-	// Write records
-	recordData := make([]byte, dbc.Header.RecordCount*dbc.Header.RecordSize)
-	offset := 0
+    // Write records
+    recordData := make([]byte, dbc.Header.RecordCount*dbc.Header.RecordSize)
+    offset := 0
 
-	for _, rec := range dbc.Records {
-		for _, field := range meta.Fields {
-			repeat := int(field.Count)
-			if repeat == 0 {
-				repeat = 1
-			}
+    for _, rec := range dbc.Records {
+        for _, field := range meta.Fields {
+            repeat := int(field.Count)
+            if repeat == 0 {
+                repeat = 1
+            }
 
-			for j := 0; j < repeat; j++ {
-				name := field.Name
-				if field.Count > 1 {
-					name = fmt.Sprintf("%s_%d", field.Name, j+1)
-				}
+            for j := 0; j < repeat; j++ {
+                name := field.Name
+                if field.Count > 1 {
+                    name = fmt.Sprintf("%s_%d", field.Name, j+1)
+                }
 
-				switch field.Type {
-				case "int32":
-					binary.LittleEndian.PutUint32(recordData[offset:offset+4],uint32(rec[name].(int32)))
-					offset += 4
-				case "uint32":
-					binary.LittleEndian.PutUint32(recordData[offset:offset+4],rec[name].(uint32))
-					offset += 4
-				case "float":
-					bits := math.Float32bits(rec[name].(float32))
-					binary.LittleEndian.PutUint32(recordData[offset:offset+4],bits)
-					offset += 4
-				case "string":
-					binary.LittleEndian.PutUint32(recordData[offset:offset+4],rec[name].(uint32))
-					offset += 4
+                switch field.Type {
+                case "int32":
+                    binary.LittleEndian.PutUint32(recordData[offset:offset+4],uint32(rec[name].(int32)))
+                    offset += 4
+                case "uint32":
+                    binary.LittleEndian.PutUint32(recordData[offset:offset+4],rec[name].(uint32))
+                    offset += 4
+                case "float":
+                    bits := math.Float32bits(rec[name].(float32))
+                    binary.LittleEndian.PutUint32(recordData[offset:offset+4],bits)
+                    offset += 4
+                case "string":
+                    binary.LittleEndian.PutUint32(recordData[offset:offset+4],rec[name].(uint32))
+                    offset += 4
 
-				case "Loc":
-					loc := rec[name].([]uint32)
-					for _, v := range loc {
-						binary.LittleEndian.PutUint32(recordData[offset:offset+4], v)
-						offset += 4
-					}
-				}
-			}
-		}
-	}
+                case "Loc":
+                    loc := rec[name].([]uint32)
+                    for _, v := range loc {
+                        binary.LittleEndian.PutUint32(recordData[offset:offset+4], v)
+                        offset += 4
+                    }
+                }
+            }
+        }
+    }
 
-	if _, err := outFile.Write(recordData); err != nil {
-		return err
-	}
+    if _, err := outFile.Write(recordData); err != nil {
+        return err
+    }
 
-	// Write string block
-	if _, err := outFile.Write(dbc.StringBlock); err != nil {
-		return err
-	}
+    // Write string block
+    if _, err := outFile.Write(dbc.StringBlock); err != nil {
+        return err
+    }
 
-	return nil
+    return nil
 }
 
 // --- Utility Functions ---
 func readString(stringBlock []byte, offset uint32) string {
-	if offset >= uint32(len(stringBlock)) {
-		return ""
-	}
-	end := offset
-	for end < uint32(len(stringBlock)) && stringBlock[end] != 0 {
-		end++
-	}
-	return string(stringBlock[offset:end])
+    if offset >= uint32(len(stringBlock)) {
+        return ""
+    }
+    end := offset
+    for end < uint32(len(stringBlock)) && stringBlock[end] != 0 {
+        end++
+    }
+    return string(stringBlock[offset:end])
 }
 
 func PrintRecord(rec Record, meta *MetaFile, stringBlock []byte) {
@@ -352,27 +352,27 @@ func PrintRecord(rec Record, meta *MetaFile, stringBlock []byte) {
 }
 
 func compareFiles(path1, path2 string) (bool, error) {
-	f1, err := os.Open(path1)
-	if err != nil {
-		return false, err
-	}
-	defer f1.Close()
+    f1, err := os.Open(path1)
+    if err != nil {
+        return false, err
+    }
+    defer f1.Close()
 
-	f2, err := os.Open(path2)
-	if err != nil {
-		return false, err
-	}
-	defer f2.Close()
+    f2, err := os.Open(path2)
+    if err != nil {
+        return false, err
+    }
+    defer f2.Close()
 
-	h1 := sha256.New()
-	h2 := sha256.New()
+    h1 := sha256.New()
+    h2 := sha256.New()
 
-	if _, err := io.Copy(h1, f1); err != nil {
-		return false, err
-	}
-	if _, err := io.Copy(h2, f2); err != nil {
-		return false, err
-	}
+    if _, err := io.Copy(h1, f1); err != nil {
+        return false, err
+    }
+    if _, err := io.Copy(h2, f2); err != nil {
+        return false, err
+    }
 
-	return string(h1.Sum(nil)) == string(h2.Sum(nil)), nil
+    return string(h1.Sum(nil)) == string(h2.Sum(nil)), nil
 }
