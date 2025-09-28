@@ -1,0 +1,12 @@
+{
+  "file": "SpellCategory.dbc",
+  "tableName": "spellcategory",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Flags", "type": "uint32"}
+  ]
+}

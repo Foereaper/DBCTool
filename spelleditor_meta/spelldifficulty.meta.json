@@ -1,0 +1,15 @@
+{
+  "file": "SpellDifficulty.dbc",
+  "tableName": "spelldifficulty",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Difficulties1", "type": "uint32"},
+    {"name": "Difficulties2", "type": "uint32"},
+    {"name": "Difficulties3", "type": "uint32"},
+    {"name": "Difficulties4", "type": "uint32"}
+  ]
+}

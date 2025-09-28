@@ -1,0 +1,12 @@
+{
+  "file": "SpellDescriptionVariables.dbc",
+  "tableName": "spelldescriptionvariables",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Formula", "type": "string"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "file": "SpellDuration.dbc",
+  "tableName": "spellduration",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "BaseDuration", "type": "uint32"},
+    {"name": "PerLevel", "type": "uint32"},
+    {"name": "MaximumDuration", "type": "uint32"}
+  ]
+}

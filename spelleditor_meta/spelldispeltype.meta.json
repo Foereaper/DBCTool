@@ -1,0 +1,31 @@
+{
+  "file": "SpellDispelType.dbc",
+  "tableName": "spelldispeltype",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Name1", "type": "string"},
+    {"name": "Name2", "type": "string"},
+    {"name": "Name3", "type": "string"},
+    {"name": "Name4", "type": "string"},
+    {"name": "Name5", "type": "string"},
+    {"name": "Name6", "type": "string"},
+    {"name": "Name7", "type": "string"},
+    {"name": "Name8", "type": "string"},
+    {"name": "Name9", "type": "string"},
+    {"name": "Name10", "type": "string"},
+    {"name": "Name11", "type": "string"},
+    {"name": "Name12", "type": "string"},
+    {"name": "Name13", "type": "string"},
+    {"name": "Name14", "type": "string"},
+    {"name": "Name15", "type": "string"},
+    {"name": "Name16", "type": "string"},
+    {"name": "NameFlags", "type": "uint32"},
+    {"name": "Combinations", "type": "uint32"},
+    {"name": "ImmunityPossible", "type": "uint32"},
+    {"name": "InternalName", "type": "string"}
+  ]
+}

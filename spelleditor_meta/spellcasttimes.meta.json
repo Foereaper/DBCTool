@@ -1,0 +1,14 @@
+{
+  "file": "SpellCastTimes.dbc",
+  "tableName": "spellcasttimes",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "CastingTime", "type": "uint32"},
+    {"name": "CastingTimePerLevel", "type": "uint32"},
+    {"name": "MinimumCastingTime", "type": "uint32"}
+  ]
+}

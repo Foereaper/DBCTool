@@ -1,0 +1,14 @@
+{
+  "file": "SpellDispelType.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "name", "type": "Loc"},
+    {"name": "mask", "type": "uint32"},
+    {"name": "immunity_possible", "type": "uint32"},
+    {"name": "internal_name", "type": "string"}
+  ]
+}

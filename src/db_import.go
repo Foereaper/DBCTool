@@ -153,57 +153,70 @@ func tableExists(db *sql.DB, table string) bool {
 func createTable(db *sql.DB, tableName string, meta *MetaFile) error {
 	var columns []string
 
-    for _, field := range meta.Fields {
-        repeat := int(field.Count)
-        if repeat == 0 {
-            repeat = 1
-        }
+	validFields := make(map[string]struct{})
+	for _, field := range meta.Fields {
+		repeat := int(field.Count)
+		if repeat == 0 {
+			repeat = 1
+		}
 
-        for j := 0; j < repeat; j++ {
-            colName := field.Name
-            if field.Count > 1 {
-                colName = fmt.Sprintf("%s_%d", field.Name, j+1)
-            }
+		for j := 0; j < repeat; j++ {
+			colName := field.Name
+			if field.Count > 1 {
+				colName = fmt.Sprintf("%s_%d", field.Name, j+1)
+			}
 
-            switch field.Type {
-            case "int32":
-                columns = append(columns, fmt.Sprintf("`%s` INT", colName))
-            case "uint32":
-                columns = append(columns, fmt.Sprintf("`%s` BIGINT UNSIGNED", colName))
-            case "float":
-                columns = append(columns, fmt.Sprintf("`%s` DECIMAL(38,16)", colName))
-            case "string":
-                columns = append(columns, fmt.Sprintf("`%s` TEXT", colName))
-            case "Loc":
-                for i, lang := range locLangs {
-                    locCol := fmt.Sprintf("%s_%s", colName, lang)
-                    if i == len(locLangs)-1 {
-                        // last element → flags as INT UNSIGNED
-                        columns = append(columns, fmt.Sprintf("`%s` INT UNSIGNED", locCol))
-                    } else {
-                        columns = append(columns, fmt.Sprintf("`%s` TEXT", locCol))
-                    }
-                }
-            default:
-                return fmt.Errorf("unknown field type: %s", field.Type)
-            }
-        }
-    }
+			switch field.Type {
+			case "int32":
+				columns = append(columns, fmt.Sprintf("`%s` INT", colName))
+			case "uint32":
+				columns = append(columns, fmt.Sprintf("`%s` BIGINT UNSIGNED", colName))
+			case "float":
+				columns = append(columns, fmt.Sprintf("`%s` DECIMAL(38,16)", colName))
+			case "string":
+				columns = append(columns, fmt.Sprintf("`%s` TEXT", colName))
+			case "Loc":
+				for i, lang := range locLangs {
+					locCol := fmt.Sprintf("%s_%s", colName, lang)
+					if i == len(locLangs)-1 {
+						columns = append(columns, fmt.Sprintf("`%s` INT UNSIGNED", locCol))
+					} else {
+						columns = append(columns, fmt.Sprintf("`%s` TEXT", locCol))
+					}
+				}
+			default:
+				return fmt.Errorf("unknown field type: %s", field.Type)
+			}
 
-	// Default primary key
-    pk := "`ID`"
-    if len(meta.PrimaryKeys) > 0 {
-        pkCols := make([]string, len(meta.PrimaryKeys))
-        for i, pkc := range meta.PrimaryKeys {
-            pkCols[i] = fmt.Sprintf("`%s`", pkc)
-        }
-        pk = strings.Join(pkCols, ", ")
-    }
+			// track valid field name
+			validFields[colName] = struct{}{}
+		}
+	}
 
-	// Start building CREATE TABLE query
+	// Default PK handling
+	pkCols := []string{"`auto_id`"} // default if nothing set
+	if len(meta.PrimaryKeys) > 0 {
+		var validPKs []string
+		for _, pkc := range meta.PrimaryKeys {
+			if _, ok := validFields[pkc]; ok {
+				validPKs = append(validPKs, fmt.Sprintf("`%s`", pkc))
+			}
+		}
+
+		if len(validPKs) > 0 {
+			pkCols = validPKs
+		} else {
+			// fallback: add surrogate key
+            log.Printf("No valid primary keys found for %s; using auto-increment surrogate key `auto_id`", tableName)
+			columns = append([]string{"`auto_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"}, columns...)
+			pkCols = []string{"`auto_id`"}
+		}
+	}
+
+	// Build CREATE TABLE
 	query := fmt.Sprintf(
 		"CREATE TABLE IF NOT EXISTS `%s` (%s, PRIMARY KEY(%s)",
-		tableName, strings.Join(columns, ", "), pk,
+		tableName, strings.Join(columns, ", "), strings.Join(pkCols, ", "),
 	)
 
 	// Add unique keys dynamically

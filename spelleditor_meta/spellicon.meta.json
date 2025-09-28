@@ -1,0 +1,12 @@
+{
+  "file": "SpellIcon.dbc",
+  "tableName": "spellicon",
+  "primaryKeys": ["ID"],
+  "sortOrder": [
+    {"name": "ID", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "ID", "type": "uint32"},
+    {"name": "Name", "type": "string"}
+  ]
+}

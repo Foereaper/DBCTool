@@ -1,0 +1,24 @@
+{
+  "file": "ItemSubClass.dbc",
+  "primaryKeys": ["auto_id"],
+  "uniqueKeys": [
+    ["class", "subclass"]
+  ],
+  "sortOrder": [
+    {"name": "auto_id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "class", "type": "uint32"},
+    {"name": "subclass", "type": "uint32"},
+    {"name": "prereq_proficiency", "type": "int32"},
+    {"name": "postreq_proficiency", "type": "int32"},
+    {"name": "flags", "type": "uint32"},
+    {"name": "display_flags", "type": "uint32"},
+    {"name": "wep_parry_seq", "type": "uint32"},
+    {"name": "wep_ready_seq", "type": "uint32"},
+    {"name": "wep_attack_seq", "type": "uint32"},
+    {"name": "wep_swing_size", "type": "uint32"},
+    {"name": "display_name", "type": "Loc"},
+    {"name": "verbose_name", "type": "Loc"}
+  ]
+}
