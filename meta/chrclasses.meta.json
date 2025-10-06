@@ -1,0 +1,21 @@
+{
+  "file": "ChrClasses.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "damage_bonus_stat", "type": "uint32" },
+    { "name": "display_power", "type": "uint32" },
+    { "name": "pet_name_token", "type": "string" },
+    { "name": "name", "type": "Loc" },
+    { "name": "name_female", "type": "Loc" },
+    { "name": "name_male", "type": "Loc" },
+    { "name": "filename", "type": "string" },
+    { "name": "spell_class_set", "type": "uint32" },
+    { "name": "flags", "type": "uint32" },
+    { "name": "cinematic_sequence_id", "type": "uint32" },
+    { "name": "required_expansion", "type": "uint32" }
+  ]
+}
