@@ -1,0 +1,10 @@
+{
+  "file": "gtNPCManaCostScaler.dbc",
+  "primaryKeys": ["auto_id"],
+  "sortOrder": [
+    {"name": "auto_id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "data", "type": "float"}
+  ]
+}
