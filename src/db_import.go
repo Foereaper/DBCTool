@@ -22,14 +22,14 @@ var locLangs = []string{
 }
 
 // ImportDBCs scans the meta directory and imports all DBCs
-func ImportDBCs(db *sql.DB, cfg *Config) error {
+func ImportDBCs(db *sql.DB, force bool, cfg *Config) error {
     metas, err := filepath.Glob(filepath.Join(cfg.Paths.Meta, "*.meta.json"))
     if err != nil {
         return fmt.Errorf("failed to scan meta directory: %w", err)
     }
 
     for _, metaPath := range metas {
-        if err := ImportDBC(db, cfg, metaPath); err != nil {
+        if err := ImportDBC(db, force, cfg, metaPath); err != nil {
             return err
         }
     }
@@ -38,7 +38,7 @@ func ImportDBCs(db *sql.DB, cfg *Config) error {
 }
 
 // ImportDBC imports a single DBC into SQL based on its meta
-func ImportDBC(db *sql.DB, cfg *Config, metaPath string) error {
+func ImportDBC(db *sql.DB, force bool, cfg *Config, metaPath string) error {
     if err := ensureChecksumTable(db); err != nil {
         return fmt.Errorf("failed to ensure dbc_checksum table: %w", err)
     }
@@ -64,7 +64,7 @@ func ImportDBC(db *sql.DB, cfg *Config, metaPath string) error {
         return fmt.Errorf("failed to ensure checksum entry for %s: %w", tableName, err)
     }
     
-    if tableExists(db, tableName) {
+    if tableExists(db, force, tableName) {
         log.Printf("Skipping %s: table already exists", tableName)
         return nil
     }
@@ -136,7 +136,7 @@ func checkUniqueKeys(records []Record, meta *MetaFile, tableName string) {
 }
 
 // tableExists checks if a table already exists
-func tableExists(db *sql.DB, table string) bool {
+func tableExists(db *sql.DB, force bool, table string) bool {
     var exists string
     err := db.QueryRow("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?", table).Scan(&exists)
     if err == sql.ErrNoRows {
@@ -144,6 +144,14 @@ func tableExists(db *sql.DB, table string) bool {
     }
     if err != nil {
         log.Printf("Warning: could not check table %s: %v", table, err)
+        return false
+    }
+    if force {
+        log.Printf("Force flag enabled: dropping existing table %s", table)
+        _, dropErr := db.Exec("DROP TABLE IF EXISTS `" + table + "`")
+        if dropErr != nil {
+            log.Printf("Error dropping table %s: %v", table, dropErr)
+        }
         return false
     }
     return true

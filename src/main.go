@@ -161,6 +161,8 @@ func handleImport(cfg *Config, args []string) {
     importCmd := flag.NewFlagSet("import", flag.ExitOnError)
     dbcName := importCmd.String("name", "", "DBC file name")
     importCmd.StringVar(dbcName, "n", "", "DBC file name (shorthand)")
+    force := importCmd.Bool("force", false, "Force import a DBC. This will drop any existing data!")
+    importCmd.BoolVar(force, "f", false, "Force import (shorthand). This will drop any existing data!")
     importCmd.Parse(args)
 
     dbcDB, err := openDB(cfg.DBC)
@@ -170,13 +172,13 @@ func handleImport(cfg *Config, args []string) {
     defer dbcDB.Close()
 
     if *dbcName == "" {
-        if err := ImportDBCs(dbcDB, cfg); err != nil {
-            log.Fatalf("Export failed: %v", err)
+        if err := ImportDBCs(dbcDB, *force, cfg); err != nil {
+            log.Fatalf("Import failed: %v", err)
         }
     } else {
         metaPath := filepath.Join(cfg.Paths.Meta, *dbcName+".meta.json")
-        if err := ImportDBC(dbcDB, cfg, metaPath); err != nil {
-            log.Fatalf("Export failed for %s: %v", *dbcName, err)
+        if err := ImportDBC(dbcDB, *force, cfg, metaPath); err != nil {
+            log.Fatalf("Import failed for %s: %v", *dbcName, err)
         }
     }
 
