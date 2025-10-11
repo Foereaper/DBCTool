@@ -55,7 +55,7 @@ jobs:
             FILENAME="dbctool.exe"
           fi
           echo "Building $FILENAME for OS=${{ matrix.os }} ARCH=${{ matrix.arch }}"
-          GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -C src -o "bin/$FILENAME"
+          GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -C src -o "../bin/$FILENAME"
 
       - name: Copy meta directory
         run: cp -r meta bin/
