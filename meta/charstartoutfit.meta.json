@@ -1,0 +1,23 @@
+{
+  "file": "CharStartOutfit.dbc",
+  "primaryKeys": ["id"],
+  "uniqueKeys": [
+    ["race", "class", "gender", "outfit_id"]
+  ],
+  "sortOrder": [
+    {"name": "race", "direction": "ASC"},
+    {"name": "class", "direction": "ASC"},
+    {"name": "gender", "direction": "ASC"},
+    {"name": "outfit_id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "race", "type": "uint8"},
+    {"name": "class", "type": "uint8"},
+    {"name": "gender", "type": "uint8"},
+    {"name": "outfit_id", "type": "uint8"},
+    {"name": "item", "type": "int32", "count": 24},
+    {"name": "display_item", "type": "int32", "count": 24},
+    {"name": "inventory_type", "type": "int32", "count": 24}
+  ]
+}

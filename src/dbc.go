@@ -116,6 +116,46 @@ func ParseHeader(data []byte) (DBCHeader, error) {
 
 // ParseRecords reads all records into memory
 func ParseRecords(data []byte, start int, header DBCHeader, meta MetaFile, stringBlock []byte) ([]Record, error) {
+    // helper to get size in bytes of a single field type element
+    sizeOf := func(typ string) (int, error) {
+        switch typ {
+        case "int32", "uint32", "float", "string":
+            return 4, nil
+        case "uint8", "int8":
+            return 1, nil
+        case "Loc":
+            return 17 * 4, nil
+        default:
+            return 0, fmt.Errorf("unknown field type: %s", typ)
+        }
+    }
+
+    // compute expected record size from meta
+    expectedRecordSize := 0
+    for _, field := range meta.Fields {
+        elemSize, err := sizeOf(field.Type)
+        if err != nil {
+            return nil, err
+        }
+        repeat := int(field.Count)
+        if repeat == 0 {
+            repeat = 1
+        }
+        expectedRecordSize += elemSize * repeat
+    }
+
+    // quick validation against header.RecordSize
+    if uint32(expectedRecordSize) != header.RecordSize {
+        return nil, fmt.Errorf("record size mismatch: header.RecordSize=%d but meta expects %d (meta mismatch/dbc malformed)", header.RecordSize, expectedRecordSize)
+    }
+
+    // ensure records area actually fits in data
+    recordsStart := start
+    totalRecordsBytes := int(header.RecordCount) * int(header.RecordSize)
+    if recordsStart+totalRecordsBytes > len(data) {
+        return nil, fmt.Errorf("file too small for all records: need %d bytes at offset %d, file length %d", totalRecordsBytes, recordsStart, len(data))
+    }
+
     var records []Record
     for i := uint32(0); i < header.RecordCount; i++ {
         rec := make(Record)
@@ -134,6 +174,14 @@ func ParseRecords(data []byte, start int, header DBCHeader, meta MetaFile, strin
                     name = fmt.Sprintf("%s_%d", field.Name, j+1)
                 }
 
+                // determine bytes needed for this element
+                elemSize, _ := sizeOf(field.Type)
+                // bounds check before attempting to slice/read
+                if recordOffset+offset+elemSize > len(data) {
+                    return nil, fmt.Errorf("out of bounds reading record %d field %s (recordOffset=%d offset=%d need %d bytes, file len=%d)",
+                        i, name, recordOffset, offset, elemSize, len(data))
+                }
+
                 switch field.Type {
                 case "int32":
                     val := int32(binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4]))
@@ -144,6 +192,11 @@ func ParseRecords(data []byte, start int, header DBCHeader, meta MetaFile, strin
                     val := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
                     rec[name] = val
                     offset += 4
+
+                case "uint8":
+                    val := data[recordOffset+offset]
+                    rec[name] = val
+                    offset += 1
 
                 case "float":
                     bits := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
@@ -158,6 +211,10 @@ func ParseRecords(data []byte, start int, header DBCHeader, meta MetaFile, strin
                 case "Loc":
                     loc := make([]uint32, 17)
                     for col := 0; col < 17; col++ {
+                        // inner bounds check (redundant because grouped above, but explicit here for clarity)
+                        if recordOffset+offset+4 > len(data) {
+                            return nil, fmt.Errorf("out of bounds reading Loc element for record %d field %s at col %d", i, name, col)
+                        }
                         val := binary.LittleEndian.Uint32(data[recordOffset+offset : recordOffset+offset+4])
                         loc[col] = val
                         offset += 4
@@ -168,6 +225,11 @@ func ParseRecords(data []byte, start int, header DBCHeader, meta MetaFile, strin
                     return nil, fmt.Errorf("unknown field type: %s", field.Type)
                 }
             }
+        }
+
+        // sanity: ensure we've consumed exactly the expected number of bytes for this record
+        if offset != expectedRecordSize {
+            return nil, fmt.Errorf("parsed record %d consumed %d bytes but expected %d", i, offset, expectedRecordSize)
         }
 
         records = append(records, rec)
@@ -267,6 +329,9 @@ func WriteDBC(dbc *DBCFile, meta *MetaFile, outPath string) error {
                 case "uint32":
                     binary.LittleEndian.PutUint32(recordData[offset:offset+4],rec[name].(uint32))
                     offset += 4
+                case "uint8":
+                    recordData[offset] = rec[name].(uint8)
+                    offset += 1
                 case "float":
                     bits := math.Float32bits(rec[name].(float32))
                     binary.LittleEndian.PutUint32(recordData[offset:offset+4],bits)

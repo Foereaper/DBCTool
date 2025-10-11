@@ -1,0 +1,15 @@
+{
+  "file": "CharBaseInfo.dbc",
+  "primaryKeys": ["auto_id"],
+  "uniqueKeys": [
+    ["race", "class"]
+  ],
+  "sortOrder": [
+    {"name": "race", "direction": "ASC"},
+    {"name": "class", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "race", "type": "uint8"},
+    {"name": "class", "type": "uint8"}
+  ]
+}

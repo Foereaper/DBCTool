@@ -118,6 +118,8 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
                     rec[name] = toInt32(raw, cols, name)
                 case "uint32":
                     rec[name] = toUint32(raw, cols, name)
+                case "uint8":
+                    rec[name] = toUint8(raw, cols, name)
                 case "float":
                     rec[name] = toFloat32(raw, cols, name)
                 case "string":
@@ -200,6 +202,8 @@ func calculateRecordSize(meta MetaFile) uint32 {
             switch f.Type {
             case "int32", "uint32", "float", "string":
                 size += 4
+            case "uint8":
+                size += 1
             case "Loc":
                 size += 4 * 17
             }
@@ -246,6 +250,28 @@ func toUint32(raw []interface{}, cols []string, name string) uint32 {
                 return uint32(v)
             case uint64:
                 return uint32(v)
+            }
+        }
+    }
+    return 0
+}
+
+func toUint8(raw []interface{}, cols []string, name string) uint8 {
+    for i, col := range cols {
+        if col == name && raw[i] != nil {
+            switch v := raw[i].(type) {
+            case int64:
+                return uint8(v)
+            case uint64:
+                return uint8(v)
+            case []byte:
+                if n, err := strconv.ParseUint(string(v), 10, 8); err == nil {
+                    return uint8(n)
+                }
+            case string:
+                if n, err := strconv.ParseUint(v, 10, 8); err == nil {
+                    return uint8(n)
+                }
             }
         }
     }

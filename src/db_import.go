@@ -171,6 +171,8 @@ func createTable(db *sql.DB, tableName string, meta *MetaFile) error {
                 columns = append(columns, fmt.Sprintf("`%s` INT", colName))
             case "uint32":
                 columns = append(columns, fmt.Sprintf("`%s` INT UNSIGNED", colName))
+            case "uint8":
+                columns = append(columns, fmt.Sprintf("`%s` TINYINT UNSIGNED", colName))
             case "float":
                 columns = append(columns, fmt.Sprintf("`%s` DECIMAL(38,16)", colName))
             case "string":
@@ -263,7 +265,7 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
                 colName = fmt.Sprintf("%s_%d", field.Name, j+1)
             }
             switch field.Type {
-            case "int32", "uint32", "float", "string":
+            case "int32", "uint32", "uint8", "float", "string":
                 columnsBase = append(columnsBase, fmt.Sprintf("`%s`", colName))
             case "Loc":
                 for _, lang := range locLangs {
@@ -309,7 +311,7 @@ func insertRecords(db *sql.DB, tableName string, dbc *DBCFile, meta *MetaFile) e
                         name = fmt.Sprintf("%s_%d", field.Name, j+1)
                     }
                     switch field.Type {
-                    case "int32", "uint32", "float":
+                    case "int32", "uint32", "uint8", "float":
                         rowPlaceholders = append(rowPlaceholders, "?")
                         allValues = append(allValues, rec[name])
                     case "string":
