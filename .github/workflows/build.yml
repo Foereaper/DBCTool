@@ -16,6 +16,19 @@ jobs:
       github.event_name == 'push' ||
       (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'build'))
 
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            arch: amd64
+          - os: darwin
+            arch: amd64
+          - os: darwin
+            arch: arm64
+          - os: windows
+            arch: amd64
+      fail-fast: false
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -25,49 +38,30 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          cache: false
           go-version: '>=1.20'
+          cache: false
 
       - name: Install dependencies
-        run: |
-          go mod tidy -C src
+        run: go mod tidy -C src
 
       - name: Make build dir
-        run: |
-          mkdir -p bin
+        run: mkdir -p bin
 
-      # Linux
-      - name: Build Linux binary
+      - name: Build binary
         run: |
-          GOOS=linux GOARCH=amd64 go build -C src -o ../bin/dbctool-linux
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dbctool-linux
-          path: bin/dbctool-linux
+          # Determine filename
+          FILENAME="dbctool"
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            FILENAME="dbctool.exe"
+          fi
+          echo "Building $FILENAME for OS=${{ matrix.os }} ARCH=${{ matrix.arch }}"
+          GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -C src -o "../bin/$FILENAME"
 
-      # MacOS Intel
-      - name: Build MacOS Intel binary
-        run: |
-          GOOS=darwin GOARCH=amd64 go build -C src -o ../bin/dbctool-macos-intel
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dbctool-macos-intel
-          path: bin/dbctool-macos-intel
+      - name: Copy meta directory
+        run: cp -r meta bin/
 
-      # MacOS ARM64
-      - name: Build MacOS ARM64 binary
-        run: |
-          GOOS=darwin GOARCH=arm64 go build -C src -o ../bin/dbctool-macos-arm64
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: dbctool-macos-arm64
-          path: bin/dbctool-macos-arm64
-
-      # Windows
-      - name: Build Windows binary
-        run: |
-          GOOS=windows GOARCH=amd64 go build -C src -o ../bin/dbctool.exe
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dbctool-windows
-          path: bin/dbctool.exe
+          name: dbctool-${{ matrix.os }}-${{ matrix.arch }}
+          path: bin/
