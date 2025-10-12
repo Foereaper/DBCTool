@@ -81,12 +81,20 @@ jobs:
       - name: Create required directories
         run: mkdir -p ./dbc_files ./dbc_export
 
+      - name: Checkout just the dbc directory
+        uses: actions/checkout@v3
+        with:
+          repository: Haeniken/TrinityCore-3.3.5-data-multilang
+          path: temp_data
+          sparse-checkout: |
+            dbc
+          sparse-checkout-cone-mode: false
+
       # Clone DBC repo and extract dbc directory
       - name: Clone DBC repo and extract dbc directory
         run: |
-          git clone --depth 1 --branch master --single-branch https://github.com/ac-data/ac-data.git temp_ac_data
-          mv temp_ac_data/dbc/* ./dbc_files/
-          rm -rf temp_ac_data
+          mv temp_data/dbc/* ./dbc_files/
+          rm -rf temp_data
 
       # Set up MySQL with default credentials
       - name: Set up MySQL
