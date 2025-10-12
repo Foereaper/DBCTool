@@ -109,7 +109,7 @@ jobs:
 
       # Create the database used by dbctool
       - name: Create test database
-        run: mysql -uroot -ppassword -e "CREATE DATABASE IF NOT EXISTS dbc;"
+        run: mysql -h 127.0.0.1 -uroot -ppassword -e "CREATE DATABASE IF NOT EXISTS dbc;"
 
       # Make dbctool executable
       - name: Make dbctool executable
