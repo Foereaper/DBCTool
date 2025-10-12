@@ -32,7 +32,7 @@ jobs:
 
       # Set up MySQL with default credentials
       - name: Set up MySQL
-        uses: mirromutth/mysql-action@v1.0
+        uses: mirromutth/mysql-action@v1.1
         with:
           mysql version: '8.0'
           mysql root password: 'password'
