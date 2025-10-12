@@ -81,7 +81,8 @@ jobs:
       - name: Create required directories
         run: mkdir -p ./dbc_files ./dbc_export
 
-      - name: Checkout just the dbc directory
+      # Clone DBC repo
+      - name: Clone DBC repo
         uses: actions/checkout@v3
         with:
           repository: Haeniken/TrinityCore-3.3.5-data-multilang
@@ -90,8 +91,8 @@ jobs:
             dbc
           sparse-checkout-cone-mode: false
 
-      # Clone DBC repo and extract dbc directory
-      - name: Clone DBC repo and extract dbc directory
+      # Move dbc files to correct dir
+      - name: Move dbc files to correct dir
         run: |
           mv temp_data/dbc/* ./dbc_files/
           rm -rf temp_data
