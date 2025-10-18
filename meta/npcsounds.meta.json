@@ -1,0 +1,11 @@
+{
+  "file": "NPCSounds.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    {"name": "id", "direction": "ASC"}
+  ],
+  "fields": [
+    {"name": "id", "type": "uint32"},
+    {"name": "sound_entry", "type": "uint32", "count":4}
+  ]
+}
