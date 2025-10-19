@@ -1,0 +1,30 @@
+{
+  "file": "CreatureDisplayInfoExtra.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "race", "type": "uint32" },
+    { "name": "gender", "type": "uint32" },
+    { "name": "skin_color", "type": "uint32" },
+    { "name": "face_type", "type": "uint32" },
+    { "name": "hair_style", "type": "uint32" },
+    { "name": "hair_color", "type": "uint32" },
+    { "name": "facial_hair", "type": "uint32" },
+    { "name": "helm_id", "type": "uint32" },
+    { "name": "shoulders_id", "type": "uint32" },
+    { "name": "shirt_id", "type": "uint32" },
+    { "name": "chest_id", "type": "uint32" },
+    { "name": "belt_id", "type": "uint32" },
+    { "name": "legs_id", "type": "uint32" },
+    { "name": "boots_id", "type": "uint32" },
+    { "name": "wrists_id", "type": "uint32" },
+    { "name": "gloves_id", "type": "uint32" },
+    { "name": "tabard_id", "type": "uint32" },
+    { "name": "cape_id", "type": "uint32" },
+    { "name": "can_equip", "type": "uint32" },
+    { "name": "texture", "type": "string" }
+  ]
+}

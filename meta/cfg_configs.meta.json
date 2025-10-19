@@ -1,0 +1,13 @@
+{
+  "file": "Cfg_Configs.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "realm_type", "type": "uint32" },
+    { "name": "player_killing_allowed", "type": "uint32" },
+    { "name": "roleplaying", "type": "uint32" }
+  ]
+}

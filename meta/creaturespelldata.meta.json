@@ -1,0 +1,12 @@
+{
+  "file": "CreatureSpellData.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "spell", "type": "uint32", "count": 4 },
+    { "name": "availability_ds", "type": "uint32", "count": 4 }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "file": "CreatureFamily.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "min_scale", "type": "float" },
+    { "name": "min_scale_level", "type": "uint32" },
+    { "name": "max_scale", "type": "float" },
+    { "name": "max_scale_level", "type": "uint32" },
+    { "name": "skill_line", "type": "uint32", "count": 2 },
+    { "name": "pet_food_mask", "type": "uint32" },
+    { "name": "pet_talent_type", "type": "int32" },
+    { "name": "category_enum_id", "type": "int32" },
+    { "name": "name", "type": "Loc" },
+    { "name": "icon", "type": "string" }
+  ]
+}

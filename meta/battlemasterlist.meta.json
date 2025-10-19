@@ -1,0 +1,18 @@
+{
+  "file": "BattlemasterList.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "map_id", "type": "int32", "count": 8 },
+    { "name": "instance_type", "type": "uint32" },
+    { "name": "groups_allowed", "type": "uint32" },
+    { "name": "name", "type": "Loc" },
+    { "name": "max_group_size", "type": "uint32" },
+    { "name": "holiday_world_state", "type": "uint32" },
+    { "name": "min_level", "type": "uint32" },
+    { "name": "max_level", "type": "uint32" }
+  ]
+}

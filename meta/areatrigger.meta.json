@@ -1,0 +1,20 @@
+{
+  "file": "AreaTrigger.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "map_id", "direction": "ASC" },
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "map_id", "type": "uint32" },
+    { "name": "x", "type": "float" },
+    { "name": "y", "type": "float" },
+    { "name": "z", "type": "float" },
+    { "name": "radius", "type": "float" },
+    { "name": "box_length", "type": "float" },
+    { "name": "box_width", "type": "float" },
+    { "name": "box_height", "type": "float" },
+    { "name": "box_yaw", "type": "float" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "file": "CharHairTextures.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "race", "type": "uint32" },
+    { "name": "gender", "type": "uint32" },
+    { "name": "unk", "type": "int32", "count": 5 }
+  ]
+}

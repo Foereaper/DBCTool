@@ -1,0 +1,29 @@
+{
+  "file": "ChrRaces.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "flags", "type": "uint32" },
+    { "name": "faction_id", "type": "uint32" },
+    { "name": "exploration_sound_id", "type": "uint32" },
+    { "name": "male_display_id", "type": "uint32" },
+    { "name": "female_display_id", "type": "uint32" },
+    { "name": "client_prefix", "type": "string" },
+    { "name": "base_language", "type": "uint32" },
+    { "name": "creature_type", "type": "uint32" },
+    { "name": "res_sickness_spell_id", "type": "uint32" },
+    { "name": "splash_sound_id", "type": "uint32" },
+    { "name": "client_filestring", "type": "string" },
+    { "name": "cinematic_sequence_id", "type": "uint32" },
+    { "name": "alliance", "type": "uint32" },
+    { "name": "name_neutral", "type": "Loc" },
+    { "name": "name_female", "type": "Loc" },
+    { "name": "name_male", "type": "Loc" },
+    { "name": "facial_hair_customization", "type": "string", "count": 2 },
+    { "name": "hair_customization", "type": "string" },
+    { "name": "required_expansion", "type": "uint32" }
+  ]
+}

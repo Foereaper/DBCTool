@@ -1,0 +1,13 @@
+{
+  "file": "CharacterFacialHairStyles.dbc",
+  "primaryKeys": ["auto_id"],
+  "sortOrder": [
+    { "name": "auto_id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "race", "type": "uint32" },
+    { "name": "gender", "type": "uint32" },
+    { "name": "variation_id", "type": "uint32" },
+    { "name": "geoset", "type": "uint32", "count": 5 }
+  ]
+}

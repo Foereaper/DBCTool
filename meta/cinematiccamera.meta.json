@@ -1,0 +1,16 @@
+{
+  "file": "CinematicCamera.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "model", "type": "string" },
+    { "name": "sound_id", "type": "uint32" },
+    { "name": "origin_x", "type": "float" },
+    { "name": "origin_y", "type": "float" },
+    { "name": "origin_z", "type": "float" },
+    { "name": "origin_facing", "type": "float" }
+  ]
+}

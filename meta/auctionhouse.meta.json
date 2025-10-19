@@ -1,0 +1,14 @@
+{
+  "file": "AuctionHouse.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "faction_id", "type": "uint32" },
+    { "name": "deposit_rate", "type": "uint32" },
+    { "name": "consignment_rate", "type": "uint32" },
+    { "name": "name", "type": "Loc" }
+  ]
+}

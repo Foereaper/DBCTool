@@ -1,0 +1,14 @@
+{
+  "file": "AttackAnimKits.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "animation", "type": "uint32" },
+    { "name": "type", "type": "uint32" },
+    { "name": "flags", "type": "uint32" },
+    { "name": "which_hand", "type": "uint32" }
+  ]
+}

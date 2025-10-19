@@ -1,0 +1,14 @@
+{
+  "file": "Cfg_Categories.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "locale_mask", "type": "uint32" },
+    { "name": "charset_mask", "type": "uint32" },
+    { "name": "flags", "type": "uint32" },
+    { "name": "name", "type": "Loc" }
+  ]
+}

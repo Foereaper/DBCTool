@@ -1,0 +1,11 @@
+{
+  "file": "CreatureMovementInfo.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "smooth_facing_chase_rate", "type": "float" }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "file": "AreaPOI.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "map_id", "direction": "ASC" },
+    { "name": "name_enus", "direction": "ASC" },
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "importance", "type": "uint32" },
+    { "name": "icon", "type": "uint32", "count": 9 },
+    { "name": "faction_id", "type": "uint32" },
+    { "name": "x", "type": "float" },
+    { "name": "y", "type": "float" },
+    { "name": "z", "type": "float" },
+    { "name": "map_id", "type": "uint32" },
+    { "name": "flags", "type": "uint32" },
+    { "name": "area_id", "type": "int32" },
+    { "name": "name", "type": "Loc" },
+    { "name": "description", "type": "Loc" },
+    { "name": "world_state_id", "type": "uint32" },
+    { "name": "world_map_link", "type": "uint32" }
+  ]
+}

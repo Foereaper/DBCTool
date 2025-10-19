@@ -1,0 +1,17 @@
+{
+  "file": "BarberShopStyle.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "type", "type": "uint32" },
+    { "name": "display_name", "type": "Loc" },
+    { "name": "description", "type": "Loc" },
+    { "name": "cost_modifier", "type": "float" },
+    { "name": "race", "type": "uint32" },
+    { "name": "gender", "type": "uint32" },
+    { "name": "data", "type": "uint32" }
+  ]
+}

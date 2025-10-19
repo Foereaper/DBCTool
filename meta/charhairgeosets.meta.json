@@ -1,0 +1,15 @@
+{
+  "file": "CharHairGeosets.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "race", "type": "uint32" },
+    { "name": "gender", "type": "uint32" },
+    { "name": "variation", "type": "uint32" },
+    { "name": "geoset", "type": "uint32" },
+    { "name": "show_scalp", "type": "uint32" }
+  ]
+}

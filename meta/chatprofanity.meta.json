@@ -1,0 +1,12 @@
+{
+  "file": "ChatProfanity.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "text", "type": "string" },
+    { "name": "language", "type": "int32" }
+  ]
+}
