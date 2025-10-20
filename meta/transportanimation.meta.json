@@ -9,9 +9,9 @@
     { "name": "id", "type": "uint32" },
     { "name": "transport_id", "type": "uint32" },
     { "name": "time_index", "type": "uint32" },
-    { "name": "pos_x", "type": "float" },
-    { "name": "pos_y", "type": "float" },
-    { "name": "pos_z", "type": "float" },
+    { "name": "x", "type": "float" },
+    { "name": "y", "type": "float" },
+    { "name": "z", "type": "float" },
     { "name": "sequence_id", "type": "uint32" }
   ]
 }
