@@ -1,0 +1,13 @@
+{
+  "file": "TaxiPath.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "id", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "from_taxi_node", "type": "int32" },
+    { "name": "to_taxi_node", "type": "int32" },
+    { "name": "cost", "type": "int32" }
+  ]
+}

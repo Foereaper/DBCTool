@@ -1,0 +1,21 @@
+{
+  "file": "TaxiPathNode.dbc",
+  "primaryKeys": ["id"],
+  "sortOrder": [
+    { "name": "path_id", "direction": "ASC" },
+    { "name": "node_index", "direction": "ASC" }
+  ],
+  "fields": [
+    { "name": "id", "type": "uint32" },
+    { "name": "path_id", "type": "uint32" },
+    { "name": "node_index", "type": "uint32" },
+    { "name": "map", "type": "uint32" },
+    { "name": "x", "type": "float" },
+    { "name": "y", "type": "float" },
+    { "name": "z", "type": "float" },
+    { "name": "flags", "type": "uint32" },
+    { "name": "delay", "type": "uint32" },
+    { "name": "arrival_event_id", "type": "uint32" },
+    { "name": "departure_event_id", "type": "uint32" }
+  ]
+}
