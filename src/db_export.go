@@ -43,6 +43,10 @@ func ExportDBC(db *sql.DB, cfg *Config, metaPath string) error {
         tableName = meta.TableName
     }
     
+    if cfg.Options.UseLowercaseTables {
+        tableName = strings.ToLower(strings.TrimSpace(tableName))
+    }
+    
     // Ensure checksum table & entry exist
     if err := ensureChecksumTable(db); err != nil {
         return fmt.Errorf("failed to ensure dbc_checksum table: %w", err)

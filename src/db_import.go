@@ -53,6 +53,10 @@ func ImportDBC(db *sql.DB, force bool, cfg *Config, metaPath string) error {
         tableName = meta.TableName
     }
     
+    if cfg.Options.UseLowercaseTables {
+        tableName = strings.ToLower(tableName)
+    }
+    
     dbcPath := filepath.Join(cfg.Paths.Base, meta.File)
 
     if _, err := os.Stat(dbcPath); os.IsNotExist(err) {

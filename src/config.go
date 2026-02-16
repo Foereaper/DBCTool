@@ -29,7 +29,8 @@ type PathConfig struct {
 
 // OptionConfig holds generic import/export options
 type OptionConfig struct {
-    UseVersioning bool `json:"use_versioning"`   // whether or not to use DBC export versioning
+    UseVersioning      bool `json:"use_versioning"`         // whether or not to use DBC export versioning
+    UseLowercaseTables bool `json:"use_lowercase_tables"`   // whether or not to use lowercase database table names
 }
 
 // Config is the root config.json structure
@@ -52,6 +53,7 @@ func loadOrInitConfig(path string) (*Config, bool, error) {
             },
             Options: OptionConfig{
                 UseVersioning: false,
+                UseLowercaseTables: false,
             },
         }
 
