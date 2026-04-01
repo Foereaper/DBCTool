@@ -100,10 +100,10 @@ jobs:
 
       # Set up MySQL with default credentials
       - name: Set up MySQL
-        uses: mirromutth/mysql-action@v1.1
+        uses: shogo82148/actions-setup-mysql@v1
         with:
-          mysql version: '8.0'
-          mysql root password: 'password'
+          mysql-version: "8.4"
+          root-password: 'password'
 
       # Wait until MySQL is ready
       - name: Wait for MySQL to start
