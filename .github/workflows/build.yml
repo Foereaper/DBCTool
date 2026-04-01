@@ -32,12 +32,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           submodules: true
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v6
         with:
           go-version: '>=1.20'
           cache: false
@@ -62,7 +62,7 @@ jobs:
         run: cp -r meta bin/
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dbctool-${{ matrix.os }}-${{ matrix.arch }}
           path: bin/
@@ -84,7 +84,7 @@ jobs:
 
       # Clone DBC repo
       - name: Clone DBC repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           repository: Haeniken/TrinityCore-3.3.5-data-multilang
           path: temp_data
