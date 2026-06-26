@@ -74,7 +74,7 @@ jobs:
     steps:
       # Download artifact into repo root
       - name: Download Linux artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dbctool-linux-amd64
           path: .
